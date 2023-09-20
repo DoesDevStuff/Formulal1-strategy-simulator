@@ -17,6 +17,6 @@ public class Constants {
 
   //CONDITIONAL FACTORS
   public static final double HANDLING_FACTOR = 0.8; // GIVEN IN QUESTION
-  public static final double STARTING_DISTANCE = 200; //every car is at x distance, from each other in a line
+  public static final double STARTING_DISTANCE = 300; //every car is at x distance, from each other in a line
 
 }

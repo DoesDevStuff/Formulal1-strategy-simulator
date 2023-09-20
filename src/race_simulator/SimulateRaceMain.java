@@ -14,15 +14,18 @@ public class SimulateRaceMain {
         int time = 0;
         initRaceCars(cars);
 
-        while (checkWinner(cars) == null) {
+        //while (checkWinner(cars) == null) {
+        while(true){
             time += 2;
             assessRaceCars(cars);
-            printCars(time, cars);
+            
+            //printCars(time, cars);
 
             // Pause to simulate the display interval
             Thread.sleep(Constants.DISPLAY_THRESHOLD_TIME);
         }
 
+        /*
         sortCars(cars);
         System.out.println("Race complete! Won by: " + cars.get(0).getTeamNumber());
         for (int i = 0; i < cars.size(); i++) {
@@ -31,12 +34,14 @@ public class SimulateRaceMain {
             System.out.print("DISTANCE LEFT " + (int) (Constants.RACE_LENGTH - car.getCurrentDistanceCovered()));
             System.out.println(" NITROUS USED " + " " + car.isNitroUsed());
         }
+        */
     }
 
     static void initRaceCars(ArrayList<SingularCar> cars) {
-        for (int i = 0; i < Constants.TOTAL_CARS; i++) {
-        	SingularCar car = new SingularCar(cars, i + 1);
-            cars.add(car);
+        //for (int i = 0; i < Constants.TOTAL_CARS; i++) {
+    	for(int i = 0; i < 1; i++){
+        	SingularCar car = new SingularCar(cars, 4); // currently we are racing with the 4th car
+            
             printCarStats(car);
         }
     }
@@ -44,8 +49,10 @@ public class SimulateRaceMain {
     static void assessRaceCars(ArrayList<SingularCar> cars) {
         for (int i = 0; i < cars.size(); i++) {
         	SingularCar car = cars.get(i);
-            car.calculateDistance();
+            car.calculateSpeedDistanceAndVelocity();
         }
+        
+        /*
         for (int i = 0; i < cars.size(); i++) {
         	SingularCar car = cars.get(i);
             car.calculateSpeed();
@@ -71,7 +78,7 @@ public class SimulateRaceMain {
                 System.out.println("REDUCED SPEED! " + car.getTeamNumber());
             }
         }
-
+		*/
     }
 
     static SingularCar checkWinner(ArrayList<SingularCar> cars) {
