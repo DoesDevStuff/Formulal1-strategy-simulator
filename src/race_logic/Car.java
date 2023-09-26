@@ -1,88 +1,73 @@
 package race_logic;
 
+import java.util.ArrayList;
+
+/*
+ * Description:
+ * This class holds all of the car information.
+ * Includes - 
+ * 1. Car value definitions
+ * 2. Individual calculations of distance and speed by each car 
+ * 
+ */
+
 public class Car {
-  private int teamNumber;
-  private double topSpeed;
-  private int acceleration;
-  private boolean nitroUsed;
-  private double handlingFactor;
-  private double currentDistanceCovered;
-  private double currentSpeed;
-  private boolean reduceSpeed;
+	private int teamNumber;
+	private int acceleration;
 
-  public int getTeamNumber() {
-    return teamNumber;
-  }
+	private double topSpeed;
+	private double currentDistanceCovered;
 
-  public void setTeamNumber(int teamNumber) {
-    this.teamNumber = teamNumber;
-  }
+	
+	int carID; // every car will have a unique id starting from 1
+	
+	ArrayList<Car> carLane; // cars start in two lanes. This will tell us which id is on what track.
+	ArrayList<Car> cars;
+	
+	
+	// Constructor for Car
+	public Car(int carID, ArrayList<Car> carLane){
+		this.carID = carID;
+		this.carLane = carLane;
+		
+		this.carLane.add(this); // adding value of each lane reference to the carLane here. (from controller, line 25)		
+		
+	}
+	/*
+	// overloading
+	public Car(ArrayList<Car> cars, int carID){
+		this.cars = cars;
+		teamNumber = carID;
+		
+		topSpeed = (5.0 * (Constants.BASE_SPEED + (Constants.SPEED_DIFF * carID)) ) / 18.0; // changed it to have 5.0 and 18.0 to have accurate speed values
+		acceleration = Constants.BASE_ACCELERATION - Constants.ACCELERATION_DIFF * carID;
+		
+		currentDistanceCovered = -((carID -1) * Constants.STARTING_DISTANCE_BETWEEN_CARS);
+		
+		cars.add((carID-1), this);
+	}
+	
+	
+	public void calculateDistance() {
+    	currentDistanceCovered =  (acceleration * Constants.CHECK_EVERY_TWO_SECONDS * Constants.CHECK_EVERY_TWO_SECONDS) / 2;
+    }
+	
+	// GETTERS
+	
+	public int getTeamNumber() {
+		return teamNumber;
+	}
+	
+	public int getAcceleration() {
+		return acceleration;
+	}
+	
+	public double getTopSpeed() {
+		return topSpeed;
+	}
 
-  public double getTopSpeed() {
-    return topSpeed;
-  }
-
-  public void setTopSpeed(double topSpeed) {
-    this.topSpeed = topSpeed;
-  }
-
-  public int getAcceleration() {
-    return acceleration;
-  }
-
-  public void setAcceleration(int acceleration) {
-    this.acceleration = acceleration;
-  }
-
-  public boolean isNitroUsed() {
-    return nitroUsed;
-  }
-
-  public void setNitroUsed(boolean nitroUsed) {
-    this.nitroUsed = nitroUsed;
-  }
-
-  public double getHandlingFactor() {
-    return handlingFactor;
-  }
-
-  public void setHandlingFactor(double handlingFactor) {
-    this.handlingFactor = handlingFactor;
-  }
-
-  public double getCurrentDistanceCovered() {
-    return currentDistanceCovered;
-  }
-
-  public void setCurrentDistanceCovered(double currentDistanceCovered) {
-    this.currentDistanceCovered = currentDistanceCovered;
-  }
-
-  public double getCurrentSpeed() {
-    return currentSpeed;
-  }
-
-  public void setCurrentSpeed(double currentSpeed) {
-    this.currentSpeed = currentSpeed;
-  }
-
-  public boolean isReduceSpeed() {
-    return reduceSpeed;
-  }
-
-  public void setReduceSpeed(boolean reduceSpeed) {
-    this.reduceSpeed = reduceSpeed;
-  }
-
-  public Car(int totalCars, int i) {
-    teamNumber = i;
-    topSpeed = 5 * (Constants.BASE_SPEED + (Constants.THRESHOLD_SPEED * i)) / 18; //Top speed: (150 + 10 * i) km per hour, and we are converting to m/s
-    acceleration = Constants.BASE_ACCELERATION - Constants.THRESHOLD_ACCELERATION * i; //Acceleration: (2 * i) meter per second square.
-
-    nitroUsed = false;
-    handlingFactor = Constants.HANDLING_FACTOR;
-    currentDistanceCovered = (totalCars - i) * Constants.STARTING_DISTANCE;
-    currentSpeed = 0;
-    reduceSpeed = false;
-  }
+	public double getCurrentDistanceCovered() {
+		return currentDistanceCovered;
+	}
+*/
 }
