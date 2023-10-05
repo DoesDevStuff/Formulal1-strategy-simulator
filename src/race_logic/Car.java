@@ -12,62 +12,99 @@ import java.util.ArrayList;
  */
 
 public class Car {
-	private int teamNumber;
-	private int acceleration;
-
-	private double topSpeed;
-	private double currentDistanceCovered;
-
+	// these are static variable so every instance will hold the exact same value when in use
+	// these will be set by the start race method. This means that every car will have the same start time	
+	public static long raceTimeAtStart = 0;
+	public static boolean isRaceStarted = false;
 	
 	int carID; // every car will have a unique id starting from 1
 	
 	ArrayList<Car> carLane; // cars start in two lanes. This will tell us which id is on what track.
-	ArrayList<Car> cars;
 	
+	public boolean isNitroUsed = false;
+	
+	// final variables; these are set only once
+	// since we are not initialising him here we must do so in the constructor
+	public final double topSpeed;
+	public final double acceleration;
+	
+	// given that we are checking every 2 seconds we would also want to have each car keep track of time
+	// this is because our calculation is going to be discrete and we would want more granularity within our car
+	// this will use the system time for now. to calculate next time and current time
+	public double prevElapsedTime_eval = 0;
+	public double elapsedTime = 0;
+	public double currentDistTravelled;
+	public double currentSpeed;
 	
 	// Constructor for Car
-	public Car(int carID, ArrayList<Car> carLane){
+	public Car(int carID, ArrayList<Car> carLane, double startPosition){
 		this.carID = carID;
 		this.carLane = carLane;
 		
+		topSpeed = (5.0 * (Constants.BASE_SPEED + (Constants.SPEED_DIFF * carID)) ) / 18.0;;
+		acceleration = Constants.ACCELERATION_DIFF * carID; // the problem statement tells us that it is based on car id
+		
+		// the start position for each car will be in negatives because each car should start behind the start line
+		currentDistTravelled = startPosition;
+		
 		this.carLane.add(this); // adding value of each lane reference to the carLane here. (from controller, line 25)		
+	}	
+	
+	// this will start the race for all of the car instances
+	// it will take in an argument of time - system time
+	public static boolean AtRaceStart(long startRaceTime){
+		// if the race has started then return false
+		if(isRaceStarted){ 
+			return false;
+		}
 		
+		Car.raceTimeAtStart = startRaceTime; // race time at the start will be set here and will be the same for every instance
+		isRaceStarted = true;
+		return true;
 	}
-	/*
-	// overloading
-	public Car(ArrayList<Car> cars, int carID){
-		this.cars = cars;
-		teamNumber = carID;
+	
+	
+	// this method does it's calculation based on time since we are doing a discrete calculation.
+	// we will have 2 evaluations for time. One for the controller and the other for the main program interval
+	// the controller will calculate the time intervals passed for the car (we have been asked to check every 2 seconds)
+	// whereas for the main program interval so that will be threaded, this  could be in fractions of a second for each thread
+	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds){
+		if(!isRaceStarted){	// race has not begun yet
+			return false;
+		}
+		/*
+		 * Since this is a discrete calculation with time we also have tdi = discrete time between intervals
+		 * and velocity changes based on our distance to next car (proximity)
+		 * u = initial velocity, v = final velocity, s = displacement, t = time, a = acceleration  
+		 * 
+		 * 
+		 * now distance = speed x time; v = u + at 
+		 * 
+		 * At t0 , u0 = 0, v0 = 0, s0 = 0
+		 * 
+		 * t1, u1 = v0, v1 = u1 + a * tdi, s = s0 + v1 * tdi   // here distance is previous distance + next distance based on discrete time interval
+		 * t2, u2 = v1, v2 = u2 + a * tdi, s = s1 + v2 * tdi
+		 * and so on....
+		 * */
 		
-		topSpeed = (5.0 * (Constants.BASE_SPEED + (Constants.SPEED_DIFF * carID)) ) / 18.0; // changed it to have 5.0 and 18.0 to have accurate speed values
-		acceleration = Constants.BASE_ACCELERATION - Constants.ACCELERATION_DIFF * carID;
+		// check if it's the beginning of the race and if so set the  evaluation time to the race start time (t0)
+		if(prevElapsedTime_eval == 0){
+			prevElapsedTime_eval = Car.raceTimeAtStart;
+		}
 		
-		currentDistanceCovered = -((carID -1) * Constants.STARTING_DISTANCE_BETWEEN_CARS);
+		elapsedTime = (evalTimeInMilliSeconds - prevElapsedTime_eval) / Constants.SECONDS_TO_MILLISECONDS; // elapsed time in seconds
+		prevElapsedTime_eval = evalTimeInMilliSeconds; // time at previous moves to time at current
 		
-		cars.add((carID-1), this);
+		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
+		
+		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
+		
+		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
+		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
+			carLane.remove(this);
+		}
+		
+		return true;
 	}
 	
-	
-	public void calculateDistance() {
-    	currentDistanceCovered =  (acceleration * Constants.CHECK_EVERY_TWO_SECONDS * Constants.CHECK_EVERY_TWO_SECONDS) / 2;
-    }
-	
-	// GETTERS
-	
-	public int getTeamNumber() {
-		return teamNumber;
-	}
-	
-	public int getAcceleration() {
-		return acceleration;
-	}
-	
-	public double getTopSpeed() {
-		return topSpeed;
-	}
-
-	public double getCurrentDistanceCovered() {
-		return currentDistanceCovered;
-	}
-*/
 }

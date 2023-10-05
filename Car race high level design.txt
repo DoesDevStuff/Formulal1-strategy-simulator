@@ -3,7 +3,7 @@
 
 In a Formula-1 challenge, there are n teams numbered 1 to n. Each team has a car and a driver. Car’s specification are as follows:
 – Top speed: (150 + 10 * i) km per hour
-– Acceleration: (2 * i) meter per second square.
+– Acceleration: (2 * i) meters per second square.
 – Handling factor (hf) = 0.8
 – Nitro : Increases the speed to double or top speed, whichever is less. Can be used only once.
 
@@ -17,7 +17,8 @@ Also, if the driver notices that he is the last one on the race, he uses ‘nitr
 
 Taking the number of teams and length of track as the input, Calculate the final speeds and the corresponding completion times.
 
-Question: What is the track length? (to determine which is the car that first crossed finish line)
+Question: Assuming track length = finish line
+Question: "If the driver notices that he is the last one on the race, he uses nitro" --- Means the last car will use nitro in first assessment only
 
 ----------------------------------------------------------------------------------------------------
 s = displacement; u = initial velocity; v = final velocity; a = acceleration; t = time of motion
@@ -25,7 +26,7 @@ s = displacement; u = initial velocity; v = final velocity; a = acceleration; t 
 v = u + at
 s = ut + 1/2 * a * t^2
 
-in this case u (initial velocuty) is zero
+in this case u (initial velocity) is zero
 v = at
 s = 1/2 * a * t^2
 

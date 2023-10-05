@@ -7,7 +7,8 @@ package race_logic;
 
 public class Constants {
 	public static final int TOTAL_CARS = 7;
-	public static final int CHECK_EVERY_TWO_SECONDS = 2; //SECONDS GIVEN IN QUESTION
+	public static final int CHECK_EVERY_N_SECONDS = 2; //SECONDS GIVEN IN QUESTION
+	public static final int SECONDS_TO_MILLISECONDS = 1000;
 	public static final int RACE_LENGTH_METRES = 12000;
 
 	// The threshold values, control how often the race progress is updated and how quickly the simulation runs in terms of real-time.
