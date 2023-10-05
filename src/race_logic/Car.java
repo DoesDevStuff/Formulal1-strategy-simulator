@@ -97,8 +97,8 @@ public class Car {
 		
 		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
 		
-		useNitro();
-		reduceSpeed();
+		//useNitro();
+		//reduceSpeed();
 		
 		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
@@ -138,6 +138,7 @@ public class Car {
 	            // Check if the other car is within 10 meters and ahead
 	            if (proximity > 0 && proximity < 10.0) {
 	                this.currentSpeed = this.currentSpeed * Constants.REDUCE_SPEED_FACTOR; 
+	                System.out.println("Car " + this.carID + " reduced speed due to proximity with Car " + frontCar.carID);
 	                break; // reduce speed only once for the closest car and then break from the loop
 	            }
 	        }
@@ -195,7 +196,7 @@ public class Car {
 	        // Boost the speed to double the current speed or top speed, whichever is less
 	        double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
 	        this.currentSpeed = nitroBoost;
-
+	        System.out.println("Car " + this.carID + " used Nitro!");
 	        return true;
 	    }
 

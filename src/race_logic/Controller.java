@@ -8,7 +8,21 @@ public class Controller {
 	ArrayList<Car> lane1 = new ArrayList<Car>(); // will hold all odd indexed cars
 	ArrayList<Car> lane2 = new ArrayList<Car>(); // will hold all even indexed cars
 	
-	public boolean initialiseLanes(){
+	public boolean startRacingNow(){
+		System.out.println("======================================INITIALISING======================================================");
+		
+		initialiseController(); // initialise controller
+		
+		System.out.println("======================================STARTING RACE=====================================================");
+		startRace(); // start and complete race
+		
+		System.out.println("======================================RACE FINISHED=====================================================");
+		
+		
+		return true;
+	}
+	
+	public boolean initialiseController(){
 		// This will alternate for the lanes and help assign the correct alternate car index between the two lanes
 		boolean isFirstLane = true;
 		
@@ -33,5 +47,51 @@ public class Controller {
 
 	}
 	
+	/*
+	 *  this method initiates a race, 
+	 *  repeatedly updates the speed and distance traveled by cars in two lanes, 
+	 *  checks if the race is finished at each interval, and continues until the race is finished.
+	 */
+	public boolean startRace(){
+		Car.AtRaceStart(System.currentTimeMillis());
+		
+		boolean isRaceFinished = false;
+		
+		// race simulation continues until explicitly broken out of i.e. when isRaceFinished = true
+		while(!isRaceFinished){
+			Sleep.sleepInterval(Constants.CHECK_EVERY_N_SECONDS * Constants.SECONDS_TO_MILLISECONDS);
+			
+			// Debug prints
+	        //System.out.println("Lane 1 size: " + lane1.size());
+	        //System.out.println("Lane 2 size: " + lane2.size());
+			
+			// checks if both lane1 and lane2 have no cars left, indicating that the race is finished
+			isRaceFinished = ( (lane1.size() == 0) && (lane2.size() == 0) );
+			// Debug prints
+			//System.out.println("isRaceFinished: " + isRaceFinished);
+			
+			long evaluationTime = System.currentTimeMillis();
+			
+			// for lane 1
+			calculateSpeedDistanceTravelled(lane1, evaluationTime);
+			// for lane 2
+			calculateSpeedDistanceTravelled(lane2, evaluationTime);
+		}
+		// Debug prints
+	    //System.out.println("RACE FINISHED");
+
+		return true;
+	}
 	
+	// iterates through the car lane and for each car in lane it will call the calculateTimeBased_SpeedDistanceTravelled method
+	public boolean calculateSpeedDistanceTravelled(ArrayList<Car> carLane, long evaluationTime){
+		int carLaneSize = carLane.size();
+		Car car = null;
+		
+		for(int i = 0; i < carLaneSize; i++){
+			car = carLane.get(i);
+			car.calculateTimeBased_SpeedDistanceTravelled(evaluationTime);
+		}
+		return true;
+	}
 }
