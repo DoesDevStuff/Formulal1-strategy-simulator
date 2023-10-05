@@ -3,7 +3,7 @@ package race_logic;
 import java.util.ArrayList;
 
 public class Controller {
-	ArrayList<Car> allCars = new ArrayList<Car>();
+	ArrayList<Car> totalCars = new ArrayList<Car>();
 	
 	ArrayList<Car> lane1 = new ArrayList<Car>(); // will hold all odd indexed cars
 	ArrayList<Car> lane2 = new ArrayList<Car>(); // will hold all even indexed cars
@@ -27,7 +27,7 @@ public class Controller {
 			double startPosition = 0 - (i * Constants.STARTING_DISTANCE_BETWEEN_CARS); // cars are positioned behind each other and start line
 			
 			// this creates a new Car, assigns it a track and also adds it to the array
-			allCars.add(new Car(i+1, currentLaneReference, startPosition)); // i+1 because car index starts at 1
+			totalCars.add(new Car(i+1, currentLaneReference, startPosition)); // i+1 because car index starts at 1
 		}
 		return true;
 
