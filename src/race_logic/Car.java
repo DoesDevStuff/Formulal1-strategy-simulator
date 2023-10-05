@@ -97,8 +97,8 @@ public class Car {
 		
 		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
 		
-		//useNitro();
-		//reduceSpeed();
+		useNitro();
+		reduceSpeed();
 		
 		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
@@ -121,85 +121,94 @@ public class Car {
 		}
 		// logic to reduce the speed if we detect possible collision
 		
-	    // Iterate through the carLane array to check distances in the same lane
-		for(int i = 0; i < carLane.size(); i++){
-			Car frontCar = carLane.get(i);
-			
+		// Condition 1: Check if there's a car in front
+	    if (hasCarInFront()) {
+	        this.currentSpeed = this.currentSpeed * Constants.REDUCE_SPEED_FACTOR; 
+	        System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front");
+	    }
+	    
+	    // Condition 2: Limit speed to top speed
+	    if (this.currentSpeed > this.topSpeed) {
+	        this.currentSpeed = this.topSpeed;
+	        System.out.println("Car " + this.carID + " speed limited to top speed");
+	    }
+
+	    // Debug statement
+	    //System.out.println("Debug: Car " + this.carID + " - reduceSpeed executed");
+
+	    return true;
+	}
+	
+	// Helper method to check if there's a car in front
+	private boolean hasCarInFront() {
+	    for (int i = 0; i < carLane.size(); i++) {
+	        Car frontCar = carLane.get(i);
+
 	        // Skip checking distance with itself
-			if(frontCar == this){
-				continue;
-			}
-			
-			// Check if the other car is in the same lane and has the next ID in the alternating pattern
+	        if (frontCar == this) {
+	            continue;
+	        }
+
+	        // Check if the other car is in the same lane and has the next ID in the alternating pattern
 	        if (frontCar.carLane == this.carLane && frontCar.carID == this.carID + 1) {
 	            // Calculate the distance between this car and the other car
 	            double proximity = frontCar.currentDistTravelled - this.currentDistTravelled;
 
 	            // Check if the other car is within 10 meters and ahead
 	            if (proximity > 0 && proximity < 10.0) {
-	                this.currentSpeed = this.currentSpeed * Constants.REDUCE_SPEED_FACTOR; 
-	                System.out.println("Car " + this.carID + " reduced speed due to proximity with Car " + frontCar.carID);
-	                break; // reduce speed only once for the closest car and then break from the loop
+	                return true; // Car in front, reduce speed
 	            }
 	        }
-		}
-		return true;
+	    }
+
+	    return false; // No car in front
 	}
 	
 	/*
 	 * If the current car is the last in both lanes and not in the same position as another car, Nitro is used.
 	 * Nitro is used ONLY ONCE
-	 * speed is boosted to double the current speed or the top speed, whichever is less.
+	 * Speed is boosted to double the current speed or the top speed, whichever is less.
 	 * 
-	 *  if the other car is in the same position, the loop breaks, and the current car does not use Nitro. 
-	 *  This ensures that only one car uses Nitro when they are in the same position in different lanes.
+	 * If the other car is in the same position, the loop breaks, and the current car does not use Nitro. 
+	 * This ensures that only one car uses Nitro when they are in the same position in different lanes.
 	 */
-	public boolean useNitro(){
-		if(!isRaceStarted){	// race has not begun yet
-			return false;
-		}
-		
-		// logic to add nitro if the car is lagging behind
-		
-		if(isNitroUsed){ // checks if nitro has been used or not
-			return false;
-		}
-		
-		// Check if this car is the last among all cars in both lanes based on alternating positions
-	    boolean isLastCarInBothLanes = true;
-
-	    // Iterate through the carLane array using a traditional for loop
-	    for (int i = 0; i < carLane.size(); i++) {
-	        Car frontCar = carLane.get(i);
-
-	        // Skip checking with itself
-	        if (frontCar == this) {
-	            continue;
-	        }
-
-	        // Check if the other car is ahead and in a different lane
-	        if (frontCar.currentDistTravelled > this.currentDistTravelled && !frontCar.carLane.equals(this.carLane)) {
-	            isLastCarInBothLanes = false;
-
-	            // If the other car is in the same position, break out of the loop
-	            if (frontCar.currentDistTravelled == this.currentDistTravelled) {
-	                break;
-	            }
-	        }
+	public boolean useNitro() {
+	    if (!isRaceStarted) {    // race has not begun yet
+	        return false;
 	    }
 
-	    // If this car is the last in both lanes and not in the same position as another car, use Nitro
-	    if (isLastCarInBothLanes) {
-	        // Use Nitro only once
-	        isNitroUsed = true;
+	    // Logic to add nitro if the car is lagging behind
 
-	        // Boost the speed to double the current speed or top speed, whichever is less
-	        double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
-	        this.currentSpeed = nitroBoost;
-	        System.out.println("Car " + this.carID + " used Nitro!");
+	    if (isNitroUsed || !isLastCarInBothLanes()) { // checks if nitro has been used or if the car is not the last in both lanes
+	        return false;
+	    }
+
+	    // Use Nitro only once
+	    isNitroUsed = true;
+
+	    // Boost the speed to double the current speed or top speed, whichever is less
+	    double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
+	    this.currentSpeed = nitroBoost;
+	    System.out.println("Car " + this.carID + " used Nitro!");
+	    return true;
+	}
+
+	// Helper method to check if this car is the last in both lanes
+	private boolean isLastCarInBothLanes() {
+	    int currentLaneIndex = carLane.indexOf(this);
+
+	    // Check if this car is the last in its lane
+	    if (currentLaneIndex == carLane.size() - 1) {
+	        // Check if this car is the last in the other lane
+	        for (Car otherCar : carLane) {
+	            if (otherCar != this && otherCar.currentDistTravelled <= this.currentDistTravelled) {
+	                return false;
+	            }
+	        }
 	        return true;
 	    }
 
 	    return false;
 	}
+   
 }

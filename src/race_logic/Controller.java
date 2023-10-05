@@ -17,7 +17,9 @@ public class Controller {
 		startRace(); // start and complete race
 		
 		System.out.println("======================================RACE FINISHED=====================================================");
-		
+		// Print winner and car stats
+	    printRaceResults(totalCars);
+
 		
 		return true;
 	}
@@ -76,6 +78,7 @@ public class Controller {
 			calculateSpeedDistanceTravelled(lane1, evaluationTime);
 			// for lane 2
 			calculateSpeedDistanceTravelled(lane2, evaluationTime);
+			
 		}
 		// Debug prints
 	    //System.out.println("RACE FINISHED");
@@ -93,5 +96,29 @@ public class Controller {
 			car.calculateTimeBased_SpeedDistanceTravelled(evaluationTime);
 		}
 		return true;
+	}
+	
+	// Print the winner
+	public void printWinner(ArrayList<Car> totalCars) {
+	    System.out.println("Race complete! Winner: Car " + totalCars.get(0).carID);
+	}
+
+	// Print the car stats at the end of the race
+	public void printCarStats(ArrayList<Car> totalCars) {
+	    for (int i = 0; i < totalCars.size(); i++) {
+	        Car car = totalCars.get(i);
+	        System.out.println("\nCAR ID " + car.carID);
+	        System.out.print("DISTANCE LEFT: " + (int) (Constants.RACE_LENGTH_METRES - car.currentDistTravelled));
+	        System.out.println(" | NITROUS USED: " + car.isNitroUsed);
+	        System.out.println("ACCELERATION: " + car.acceleration);
+	        System.out.println("TOP SPEED: " + car.topSpeed);
+	        System.out.println("CURRENT SPEED: " + car.currentSpeed);
+	    }
+	}
+
+	// Print the winner and car stats
+	public void printRaceResults(ArrayList<Car> totalCars) {
+	    printWinner(totalCars);
+	    printCarStats(totalCars);
 	}
 }
