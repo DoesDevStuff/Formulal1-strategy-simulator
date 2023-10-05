@@ -97,6 +97,9 @@ public class Car {
 		
 		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
 		
+		useNitro();
+		reduceSpeed();
+		
 		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
@@ -107,4 +110,95 @@ public class Car {
 		return true;
 	}
 	
+	/*
+	 * Here we first check if the car is in the same lane as the car we are checking against
+	 * also since we are alternating the cars in lanes we must check if  otherCar is following the same alternating pattern i.e frontCar.carID == this.carID + 1
+	 * This ensures that each car is checking for the distance to the car immediately in front of it in the same lane
+	 */
+	public boolean reduceSpeed(){
+		if(!isRaceStarted){	// race has not begun yet
+			return false;
+		}
+		// logic to reduce the speed if we detect possible collision
+		
+	    // Iterate through the carLane array to check distances in the same lane
+		for(int i = 0; i < carLane.size(); i++){
+			Car frontCar = carLane.get(i);
+			
+	        // Skip checking distance with itself
+			if(frontCar == this){
+				continue;
+			}
+			
+			// Check if the other car is in the same lane and has the next ID in the alternating pattern
+	        if (frontCar.carLane == this.carLane && frontCar.carID == this.carID + 1) {
+	            // Calculate the distance between this car and the other car
+	            double proximity = frontCar.currentDistTravelled - this.currentDistTravelled;
+
+	            // Check if the other car is within 10 meters and ahead
+	            if (proximity > 0 && proximity < 10.0) {
+	                this.currentSpeed = this.currentSpeed * Constants.REDUCE_SPEED_FACTOR; 
+	                break; // reduce speed only once for the closest car and then break from the loop
+	            }
+	        }
+		}
+		return true;
+	}
+	
+	/*
+	 * If the current car is the last in both lanes and not in the same position as another car, Nitro is used.
+	 * Nitro is used ONLY ONCE
+	 * speed is boosted to double the current speed or the top speed, whichever is less.
+	 * 
+	 *  if the other car is in the same position, the loop breaks, and the current car does not use Nitro. 
+	 *  This ensures that only one car uses Nitro when they are in the same position in different lanes.
+	 */
+	public boolean useNitro(){
+		if(!isRaceStarted){	// race has not begun yet
+			return false;
+		}
+		
+		// logic to add nitro if the car is lagging behind
+		
+		if(isNitroUsed){ // checks if nitro has been used or not
+			return false;
+		}
+		
+		// Check if this car is the last among all cars in both lanes based on alternating positions
+	    boolean isLastCarInBothLanes = true;
+
+	    // Iterate through the carLane array using a traditional for loop
+	    for (int i = 0; i < carLane.size(); i++) {
+	        Car frontCar = carLane.get(i);
+
+	        // Skip checking with itself
+	        if (frontCar == this) {
+	            continue;
+	        }
+
+	        // Check if the other car is ahead and in a different lane
+	        if (frontCar.currentDistTravelled > this.currentDistTravelled && !frontCar.carLane.equals(this.carLane)) {
+	            isLastCarInBothLanes = false;
+
+	            // If the other car is in the same position, break out of the loop
+	            if (frontCar.currentDistTravelled == this.currentDistTravelled) {
+	                break;
+	            }
+	        }
+	    }
+
+	    // If this car is the last in both lanes and not in the same position as another car, use Nitro
+	    if (isLastCarInBothLanes) {
+	        // Use Nitro only once
+	        isNitroUsed = true;
+
+	        // Boost the speed to double the current speed or top speed, whichever is less
+	        double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
+	        this.currentSpeed = nitroBoost;
+
+	        return true;
+	    }
+
+	    return false;
+	}
 }
