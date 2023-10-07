@@ -86,6 +86,7 @@ public class Controller {
 		// Debug prints
 	    //System.out.println("RACE FINISHED");
 
+	    
 		return true;
 	}
 	
@@ -118,6 +119,11 @@ public class Controller {
             System.out.println("ACCELERATION: " + car.acceleration);
             System.out.println("TOP SPEED: " + car.topSpeed);
             System.out.println("CURRENT SPEED: " + car.currentSpeed);
+            
+            if (car.finishTime > 0) {
+                double raceTimeInSeconds = (car.finishTime - Car.raceTimeAtStart) / Constants.SECONDS_TO_MILLISECONDS;
+                System.out.println("Car " + car.carID + " Finish Time: " + raceTimeInSeconds + " seconds");
+            }
         }
     }
 

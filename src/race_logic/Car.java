@@ -36,6 +36,8 @@ public class Car {
 	public double currentDistTravelled;
 	public double currentSpeed;
 	
+    public double finishTime = 0;
+	
 	// Constructor for Car
 	public Car(int carID, ArrayList<Car> carLane, double startPosition){
 		this.carID = carID;
@@ -104,6 +106,7 @@ public class Car {
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
 			carLane.remove(this);
+	        finishTime = evalTimeInMilliSeconds; // Record the finish time
 		}
 		
 		return true;
