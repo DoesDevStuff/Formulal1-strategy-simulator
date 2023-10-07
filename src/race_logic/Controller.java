@@ -106,21 +106,21 @@ public class Controller {
         System.out.println("Race complete! Winner: Car " + totalCars.get(0).carID);
     }
 
-    // Print the car stats at the end of the race
+ // Print the car stats at the end of the race
     public void printCarStats(ArrayList<Car> totalCars) {
-    	
+
         for (int i = 0; i < totalCars.size(); i++) {
             Car car = totalCars.get(i);
+
             System.out.println("\nCAR ID " + car.carID);
-            System.out.print("DISTANCE LEFT: " + (int) (Constants.RACE_LENGTH_METRES - car.currentDistTravelled));
-            System.out.println(" | NITROUS USED: " + car.isNitroUsed);
+            System.out.println("DISTANCE COVERED: " + (int) car.currentDistTravelled);
+            System.out.println("NITROUS USED: " + car.isNitroUsed);
             System.out.println("ACCELERATION: " + car.acceleration);
             System.out.println("TOP SPEED: " + car.topSpeed);
             System.out.println("CURRENT SPEED: " + car.currentSpeed);
-            System.out.println("Debug: " + "Car " + car.carID + " completed the race in " + car.elapsedTime + " seconds.");
-
         }
     }
+
 
     // Print the winner and car stats
     public void printRaceResults(ArrayList<Car> totalCars) {
@@ -128,20 +128,21 @@ public class Controller {
         printCarStats(totalCars);
         
     }
-    
+
  // Custom sorting method to sort cars by the order in which they complete the race length
     private void sortCarsByCompletion(ArrayList<Car> cars) {
         int n = cars.size();
 
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                if (cars.get(j).currentDistTravelled >= Constants.RACE_LENGTH_METRES && cars.get(j + 1).currentDistTravelled < Constants.RACE_LENGTH_METRES) {
+                if (hasCompletedRace(cars.get(j)) && !hasCompletedRace(cars.get(j + 1))) {
                     // If current car has completed the race and the next one hasn't, swap them
                     swapCars(cars, j, j + 1);
                 } else if (cars.get(j).currentDistTravelled > cars.get(j + 1).currentDistTravelled) {
                     // If neither or both cars have completed, sort by distance travelled
                     swapCars(cars, j, j + 1);
-                } else if (cars.get(j).currentDistTravelled == cars.get(j + 1).currentDistTravelled && cars.get(j).carID > cars.get(j + 1).carID) {
+                } else if (cars.get(j).currentDistTravelled == cars.get(j + 1).currentDistTravelled &&
+                        cars.get(j).carID > cars.get(j + 1).carID) {
                     // If both cars have completed the race, sort by carID
                     swapCars(cars, j, j + 1);
                 }
@@ -149,6 +150,12 @@ public class Controller {
         }
     }
 
+    // Helper method to check if a car has completed the race
+    private boolean hasCompletedRace(Car car) {
+        return car.currentDistTravelled >= Constants.RACE_LENGTH_METRES;
+    }
+
+    
     // Helper method to swap cars
     private void swapCars(ArrayList<Car> cars, int i, int j) {
         Car temp = cars.get(i);
