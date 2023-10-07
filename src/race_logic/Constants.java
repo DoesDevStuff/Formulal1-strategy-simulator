@@ -20,6 +20,7 @@ public class Constants {
 	public static final int BASE_SPEED = 150; //km/hr
 	public static final int BASE_ACCELERATION = 20; // in m/s^2
 	public static final int SPEED_DIFF = 10; //difference of speed between each car
+	public static final int COLLISION_RANGE = 10; // Distance before collision between car behind and one in front
 	public static final int ACCELERATION_DIFF = 2; // difference of acceleration between each car
 
 	//CONDITIONAL FACTORS

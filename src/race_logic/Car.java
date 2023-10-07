@@ -96,11 +96,10 @@ public class Car {
 		prevElapsedTime_eval = evalTimeInMilliSeconds; // time at previous moves to time at current
 		
 		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
+		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
 		useNitro();
 		reduceSpeed();
-		
-		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
@@ -120,48 +119,38 @@ public class Car {
 			return false;
 		}
 		// logic to reduce the speed if we detect possible collision
-		
-		// Condition 1: Check if there's a car in front
-	    if (hasCarInFront()) {
-	        this.currentSpeed = this.currentSpeed * Constants.REDUCE_SPEED_FACTOR; 
-	        System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front");
+		Car frontCar = findCarInFront();
+
+	    if (frontCar != null) {
+	        double proximity = this.currentDistTravelled - frontCar.currentDistTravelled;
+
+	        if (proximity > 0 && proximity <= Constants.COLLISION_RANGE) {
+	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
+	            System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front");
+	        }
 	    }
-	    
-	    // Condition 2: Limit speed to top speed
+
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
 	        System.out.println("Car " + this.carID + " speed limited to top speed");
 	    }
 
-	    // Debug statement
-	    //System.out.println("Debug: Car " + this.carID + " - reduceSpeed executed");
-
-	    return true;
+	    return true;		
 	}
-	
-	// Helper method to check if there's a car in front
-	private boolean hasCarInFront() {
-	    for (int i = 0; i < carLane.size(); i++) {
+
+	private Car findCarInFront() {
+	    int currentIndex = carLane.indexOf(this);
+	    int laneNumber = (currentIndex % 2 == 0) ? 1 : 2; // Determine the lane number based on even or odd index
+
+	    for (int i = currentIndex - 1; i >= 0; i--) {
 	        Car frontCar = carLane.get(i);
-
-	        // Skip checking distance with itself
-	        if (frontCar == this) {
-	            continue;
-	        }
-
-	        // Check if the other car is in the same lane and has the next ID in the alternating pattern
-	        if (frontCar.carLane == this.carLane && frontCar.carID == this.carID + 1) {
-	            // Calculate the distance between this car and the other car
-	            double proximity = frontCar.currentDistTravelled - this.currentDistTravelled;
-
-	            // Check if the other car is within 10 meters and ahead
-	            if (proximity > 0 && proximity < 10.0) {
-	                return true; // Car in front, reduce speed
-	            }
+	        // Check if the other car is in the same lane
+	        if (frontCar.carLane == this.carLane && (i % 2 == laneNumber - 1)) {
+	            return frontCar;
 	        }
 	    }
 
-	    return false; // No car in front
+	    return null; // No car in front
 	}
 	
 	/*
@@ -196,11 +185,13 @@ public class Car {
 	// Helper method to check if this car is the last in both lanes
 	private boolean isLastCarInBothLanes() {
 	    int currentLaneIndex = carLane.indexOf(this);
+	    int laneSize = carLane.size();
 
 	    // Check if this car is the last in its lane
-	    if (currentLaneIndex == carLane.size() - 1) {
+	    if (currentLaneIndex == laneSize - 1) {
 	        // Check if this car is the last in the other lane
-	        for (Car otherCar : carLane) {
+	        for (int i = 0; i < laneSize; i++) {
+	            Car otherCar = carLane.get(i);
 	            if (otherCar != this && otherCar.currentDistTravelled <= this.currentDistTravelled) {
 	                return false;
 	            }
