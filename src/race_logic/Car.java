@@ -219,7 +219,7 @@ public class Car extends Thread {
 		if (frontCar == null)
 			return false;
 
-	        double proximityWithFrontCar = frontCar.currentDistTravelled - this.currentDistTravelled;
+	        double proximityWithFrontCar = frontCar.currentDistTravelled - (this.currentDistTravelled);
 
 	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE && proximityWithFrontCar >= 0) {
 	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
