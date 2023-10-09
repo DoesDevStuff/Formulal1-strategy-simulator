@@ -45,7 +45,6 @@ public class Car extends Thread {
 	ArrayList<Car> carLane = null;   //reference to the lane this car is in
 	
 	public int iterationNumner = 0;
-
 	public boolean isNitroUsed = false;
 	
 	// final variables; these are set only once
@@ -166,6 +165,7 @@ public class Car extends Thread {
 		
 		elapsedTime = (evalTimeInMilliSeconds - prevElapsedTime) / Constants.SECONDS_TO_MILLISECONDS; // elapsed time in seconds
 		prevElapsedTime = evalTimeInMilliSeconds; // time at previous moves to time at current
+
 		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
 		
 		useNitro();
@@ -219,9 +219,9 @@ public class Car extends Thread {
 		if (frontCar == null)
 			return false;
 
-	        double proximityWithFrontCar = this.currentDistTravelled - frontCar.currentDistTravelled;
+	        double proximityWithFrontCar = frontCar.currentDistTravelled - this.currentDistTravelled;
 
-	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE) {
+	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE && proximityWithFrontCar >= 0) {
 	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
 	            System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front to: " + this.currentSpeed);
 	    }
