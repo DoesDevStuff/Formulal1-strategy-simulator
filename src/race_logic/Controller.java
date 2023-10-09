@@ -43,10 +43,26 @@ public class Controller {
 			isFirstLane  = !isFirstLane; // toggle the flag.
 			
 			double startPosition = 0 - (i * Constants.STARTING_DISTANCE_BETWEEN_CARS); // cars are positioned behind each other and start line
-			
+
 			// this creates a new Car, assigns it a track and also adds it to the array
-			totalCars.add(new Car(i+1, currentLaneReference, startPosition)); // i+1 because car index starts at 1
+			Car myCar = new Car(i + 1, currentLaneReference, totalCars, startPosition); // i+1 because car index starts at 1
+			
+			// also adds this to total cars array
+			totalCars.add(myCar);
+			
+			myCar.start(); // start the thread
 		}
+		
+		try {
+		System.out.println("Controller: Threads created...");
+		Thread.sleep(1000);
+		System.out.println("Controller: Starting business logic all threads...");
+		Thread.sleep(1000);
+		}
+		catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+		
 		return true;
 
 	}
@@ -57,7 +73,9 @@ public class Controller {
 	 *  checks if the race is finished at each interval, and continues until the race is finished.
 	 */
 	public boolean startRace(){
-		Car.AtRaceStart(System.currentTimeMillis());
+		//Car.AtRaceStart(System.currentTimeMillis());
+		Car.startAllThreads();
+		System.out.println("Race Started");
 		
 		boolean isRaceFinished = false;
 		
@@ -71,6 +89,8 @@ public class Controller {
 			
 			// checks if both lane1 and lane2 have no cars left, indicating that the race is finished
 			isRaceFinished = ( (lane1.size() == 0) && (lane2.size() == 0) );
+			Car.terminateAllThreads();
+			System.out.println("Race Finished");
 			// Debug prints
 			//System.out.println("isRaceFinished: " + isRaceFinished);
 			
@@ -121,7 +141,7 @@ public class Controller {
             System.out.println("CURRENT SPEED: " + car.currentSpeed);
             
             if (car.finishTime > 0) {
-                double raceTimeInSeconds = (car.finishTime - Car.raceTimeAtStart) / Constants.SECONDS_TO_MILLISECONDS;
+                double raceTimeInSeconds = (car.finishTime - car.raceTimeAtStart) / Constants.SECONDS_TO_MILLISECONDS;
                 System.out.println("Car " + car.carID + " Finish Time: " + raceTimeInSeconds + " seconds");
             }
         }

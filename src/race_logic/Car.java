@@ -11,16 +11,41 @@ import java.util.ArrayList;
  * 
  */
 
-public class Car {
+public class Car extends Thread {
+// These are class members {
+	//the keyword "volatile" tells the compiler that the value of a variable must never be "cached"
+	//as its value may change outside of the scope of the program
+	//read more on "volatile" in the context of multi-threading + multiprocessor
+	private static volatile boolean startFlag = false;
+	private static volatile boolean terminateFlag = false;
+
+	//MainClass.terminateThreadsAfterSeconds tells how many seconds a thread will run
+	private static int runGranularityMs = 2000; //loop wait, see the while loop inside run(); 2 secs
+
+	
 	// these are static variable so every instance will hold the exact same value when in use
 	// these will be set by the start race method. This means that every car will have the same start time	
-	public static long raceTimeAtStart = 0;
+	public long raceTimeAtStart = 0;  //this thread started business logic at ... (milliseconds)
 	public static boolean isRaceStarted = false;
 	
+	//starts all threads. note the static
+	public static void startAllThreads() {
+		startFlag = true;
+	}
+
+	//terminates all threads. note the static
+	public static void terminateAllThreads() {
+		terminateFlag = true;
+	}
+// These are class members }
+	
+	// instance members start here:
 	int carID; // every car will have a unique id starting from 1
+	ArrayList<Car> totalCars = null; //reference to total cars array in controller	
+	ArrayList<Car> carLane = null;   //reference to the lane this car is in
 	
-	ArrayList<Car> carLane; // cars start in two lanes. This will tell us which id is on what track.
-	
+	public int iterationNumner = 0;
+
 	public boolean isNitroUsed = false;
 	
 	// final variables; these are set only once
@@ -31,16 +56,16 @@ public class Car {
 	// given that we are checking every 2 seconds we would also want to have each car keep track of time
 	// this is because our calculation is going to be discrete and we would want more granularity within our car
 	// this will use the system time for now. to calculate next time and current time
-	public double prevElapsedTime_eval = 0;
+	public double prevElapsedTime = 0;
 	public double elapsedTime = 0;
 	public double currentDistTravelled;
 	public double currentSpeed;
-	
     public double finishTime = 0;
 	
 	// Constructor for Car
-	public Car(int carID, ArrayList<Car> carLane, double startPosition){
+	public Car(int carID, ArrayList<Car> carLane, ArrayList<Car> totalCars, double startPosition){
 		this.carID = carID;
+		this.totalCars = totalCars;
 		this.carLane = carLane;
 		
 		topSpeed = (5.0 * (Constants.BASE_SPEED + (Constants.SPEED_DIFF * carID)) ) / 18.0;;
@@ -51,7 +76,34 @@ public class Car {
 		
 		this.carLane.add(this); // adding value of each lane reference to the carLane here. (from controller, line 25)		
 	}	
-	
+
+	public void run() {
+		try {
+			System.out.println("Car: Car " + carID + " in Run method, waiting to start business logic");
+			Thread.sleep(runGranularityMs);
+			
+			while(!startFlag) {} // wait for start flag
+			
+			System.out.println("Car: Car " + carID + " started running business logic");
+			
+			raceTimeAtStart = System.currentTimeMillis();
+			isRaceStarted = true;			
+			
+			while(!terminateFlag) {
+				// Calls calculateTimeBased_SpeedDistanceTravelled and passes the evaluation period (runGranularityMs)
+				calculateTimeBased_SpeedDistanceTravelled(runGranularityMs);
+				
+				Thread.sleep(runGranularityMs);
+			}
+			
+			System.out.println("Mythread: Thread " + carID + " terminated with terminate flag");
+		}
+		catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	/*
 	// this will start the race for all of the car instances
 	// it will take in an argument of time - system time
 	public static boolean AtRaceStart(long startRaceTime){
@@ -64,16 +116,19 @@ public class Car {
 		isRaceStarted = true;
 		return true;
 	}
-	
+	*/
 	
 	// this method does it's calculation based on time since we are doing a discrete calculation.
 	// we will have 2 evaluations for time. One for the controller and the other for the main program interval
 	// the controller will calculate the time intervals passed for the car (we have been asked to check every 2 seconds)
 	// whereas for the main program interval so that will be threaded, this  could be in fractions of a second for each thread
-	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds){
-		if(!isRaceStarted){	// race has not begun yet
+	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
+/*
+		if (!isRaceStarted) {	// race has not begun yet
 			return false;
 		}
+*/
+		
 		/*
 		 * Since this is a discrete calculation with time we also have tdi = discrete time between intervals
 		 * and velocity changes based on our distance to next car (proximity)
@@ -89,20 +144,50 @@ public class Car {
 		 * and so on....
 		 * */
 		
+		//
+		++iterationNumner;
+		System.out.println("---- before --------");
+		System.out.println("iterationNumner: " + iterationNumner);
+		System.out.println("CAR ID " + carID);
+		System.out.println("Elapsed time: " + elapsedTime);
+		System.out.println("DISTANCE COVERED: " + currentDistTravelled);
+		System.out.println("NITROUS USED: " + isNitroUsed);
+		System.out.println("ACCELERATION: " + acceleration);
+		System.out.println("TOP SPEED: " + topSpeed);
+		System.out.println("CURRENT SPEED: " + currentSpeed);
+		System.out.println("---- before --------");
+		System.out.println();
+		//		
+		
 		// check if it's the beginning of the race and if so set the  evaluation time to the race start time (t0)
-		if(prevElapsedTime_eval == 0){
-			prevElapsedTime_eval = Car.raceTimeAtStart;
+		if (prevElapsedTime == 0) {
+			prevElapsedTime = raceTimeAtStart;
 		}
 		
-		elapsedTime = (evalTimeInMilliSeconds - prevElapsedTime_eval) / Constants.SECONDS_TO_MILLISECONDS; // elapsed time in seconds
-		prevElapsedTime_eval = evalTimeInMilliSeconds; // time at previous moves to time at current
-		
+		elapsedTime = (evalTimeInMilliSeconds - prevElapsedTime) / Constants.SECONDS_TO_MILLISECONDS; // elapsed time in seconds
+		prevElapsedTime = evalTimeInMilliSeconds; // time at previous moves to time at current
 		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
-		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
 		useNitro();
-		reduceSpeed();
+		limitToTopSpeed();
+		reduceSpeedIfPossibleCollision();
+
+		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
 		
+		//
+		System.out.println("---- after --------");
+		System.out.println("iterationNumner: " + iterationNumner);
+		System.out.println("CAR ID " + carID);
+		System.out.println("Elapsed time: " + elapsedTime);
+		System.out.println("DISTANCE COVERED: " + currentDistTravelled);
+		System.out.println("NITROUS USED: " + isNitroUsed);
+		System.out.println("ACCELERATION: " + acceleration);
+		System.out.println("TOP SPEED: " + topSpeed);
+		System.out.println("CURRENT SPEED: " + currentSpeed);
+		System.out.println("---- after --------");
+		System.out.println();
+		//		
+
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
 			carLane.remove(this);
@@ -112,39 +197,46 @@ public class Car {
 		return true;
 	}
 	
-	/*
-	 * Here we first check if the car is in the same lane as the car we are checking against
-	 * also since we are alternating the cars in lanes we must check if  otherCar is following the same alternating pattern i.e frontCar.carID == this.carID + 1
-	 * This ensures that each car is checking for the distance to the car immediately in front of it in the same lane
-	 */
-	public boolean reduceSpeed(){
-		if(!isRaceStarted){	// race has not begun yet
-			return false;
-		}
-		// logic to reduce the speed if we detect possible collision
-		Car frontCar = findCarInFront();
 
-	    if (frontCar != null) {
-	        double proximity = this.currentDistTravelled - frontCar.currentDistTravelled;
-
-	        if (proximity > 0 && proximity <= Constants.COLLISION_RANGE) {
-	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
-	            System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front");
-	        }
-	    }
-
+	public boolean limitToTopSpeed() {
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
 	        System.out.println("Car " + this.carID + " speed limited to top speed");
 	    }
 
-	    return true;		
+        return true;
 	}
 
-	private Car findCarInFront() {
-	    int currentIndex = carLane.indexOf(this);
-	    int laneNumber = (currentIndex % 2 == 0) ? 1 : 2; // Determine the lane number based on even or odd index
+	 /*
+	 * Here we first check if the car is in the same lane as the car we are checking against
+	 * also since we are alternating the cars in lanes we must check if  otherCar is following the same alternating pattern i.e frontCar.carID == this.carID + 1
+	 * This ensures that each car is checking for the distance to the car immediately in front of it in the same lane
+	 */
+	public boolean reduceSpeedIfPossibleCollision() {
+		// logic to reduce the speed if we detect possible collision
+		Car frontCar = findCarInFront();
+		
+		if (frontCar == null)
+			return false;
 
+	        double proximityWithFrontCar = this.currentDistTravelled - frontCar.currentDistTravelled;
+
+	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE) {
+	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
+	            System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front to: " + this.currentSpeed);
+	    }
+
+	    return true;		
+	}
+	
+	
+
+	private Car findCarInFront() {
+	    int myIndex = carLane.indexOf(this);
+	    //int laneNumber = (currentIndex % 2 == 0) ? 1 : 2; // Determine the lane number based on even or odd index
+
+	    return (myIndex <= 0) ? null : carLane.get(myIndex - 1);
+/*
 	    for (int i = currentIndex - 1; i >= 0; i--) {
 	        Car frontCar = carLane.get(i);
 	        // Check if the other car is in the same lane
@@ -152,8 +244,8 @@ public class Car {
 	            return frontCar;
 	        }
 	    }
+*/
 
-	    return null; // No car in front
 	}
 	
 	/*
@@ -165,13 +257,8 @@ public class Car {
 	 * This ensures that only one car uses Nitro when they are in the same position in different lanes.
 	 */
 	public boolean useNitro() {
-	    if (!isRaceStarted) {    // race has not begun yet
-	        return false;
-	    }
-
-	    // Logic to add nitro if the car is lagging behind
-
-	    if (isNitroUsed || !isLastCarInBothLanes()) { // checks if nitro has been used or if the car is not the last in both lanes
+		// return if nitro has already been used or if the car is not the last in both lanes
+	    if ( (isNitroUsed) || (!isLastCarInBothLanes()) ) { 
 	        return false;
 	    }
 
@@ -179,30 +266,19 @@ public class Car {
 	    isNitroUsed = true;
 
 	    // Boost the speed to double the current speed or top speed, whichever is less
-	    double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
-	    this.currentSpeed = nitroBoost;
+	    //double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
+	    this.currentSpeed = this.currentSpeed * 2;
 	    System.out.println("Car " + this.carID + " used Nitro!");
+
 	    return true;
 	}
 
 	// Helper method to check if this car is the last in both lanes
 	private boolean isLastCarInBothLanes() {
-	    int currentLaneIndex = carLane.indexOf(this);
-	    int laneSize = carLane.size();
+	    int currentLaneIndex = totalCars.indexOf(this);
+	    int laneSize = totalCars.size();
 
-	    // Check if this car is the last in its lane
-	    if (currentLaneIndex == laneSize - 1) {
-	        // Check if this car is the last in the other lane
-	        for (int i = 0; i < laneSize; i++) {
-	            Car otherCar = carLane.get(i);
-	            if (otherCar != this && otherCar.currentDistTravelled <= this.currentDistTravelled) {
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
-
-	    return false;
+	    return currentLaneIndex >= (laneSize - 1);
 	}
    
 }
