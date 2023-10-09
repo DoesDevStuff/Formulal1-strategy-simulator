@@ -167,9 +167,9 @@ public class Car {
 		if (frontCar == null)
 			return false;
 
-	        double proximityWithFrontCar = this.currentDistTravelled - frontCar.currentDistTravelled;
+	        double proximityWithFrontCar = frontCar.currentDistTravelled - this.currentDistTravelled;
 
-	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE) {
+	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE && proximityWithFrontCar >= 0) {
 	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
 	            System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front to: " + this.currentSpeed);
 	    }
