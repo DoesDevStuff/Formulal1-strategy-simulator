@@ -3,10 +3,10 @@
 ## Problem Statement: 
 
 In a Formula-1 challenge, there are n teams numbered 1 to n. Each team has a car and a driver. Car’s specification are as follows:
-– Top speed: (150 + 10 * i) km per hour
-– Acceleration: (2 * i) meter per second square.
-– Handling factor (hf) = 0.8
-– Nitro : Increases the speed to double or top speed, whichever is less. Can be used only once.
+* Top speed: (150 + 10 * i) km per hour
+* Acceleration: (2 * i) meter per second square.
+* Handling factor (hf) = 0.8
+* Nitro : Increases the speed to double or top speed, whichever is less. Can be used only once.
 
 Here i is the team number.
 The cars line up for the race. The start line for (i + 1)th car is 200 * i meters behind the ith car.
