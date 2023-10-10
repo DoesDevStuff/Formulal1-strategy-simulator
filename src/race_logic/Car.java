@@ -187,9 +187,10 @@ public class Car extends Thread {
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
 	        System.out.println("Car " + this.carID + " speed limited to top speed");
+	        return true;
 	    }
 
-        return true;
+        return false;
 	}
 
 	 /*

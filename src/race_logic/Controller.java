@@ -104,15 +104,14 @@ public class Controller {
 
  // Print the car stats at the end of the race
     public void printCarStats(ArrayList<Car> totalCars) {
-    	Sleep.sleepInterval(1000);
-    	
+
     	double minTime = -1;
     	int minCarId = -1;
     	double carTime = -1;
         StringBuffer stringBuffer = new StringBuffer();
     	
     	int totalCarCount = totalCars.size();
-
+    	
     	
     	for (int i = 0; i < totalCarCount; i++) {
             Car car = totalCars.get(i);
@@ -127,16 +126,15 @@ public class Controller {
             }
             
             if (i == (totalCarCount - 1))
-            	System.out.println("Race complete! Winner is: Car " + minCarId);
+            	System.out.println("Race complete! MyWinner: Car " + minCarId);
 
             //stringBuffer.append(
-            stringBuffer.append("\n");
-            stringBuffer.append("Car Id " + car.carID + "\n");
-            stringBuffer.append("Distance Covered: " + (int) car.currentDistTravelled + "\n");
-            stringBuffer.append("Nitrous Used: " + car.isNitroUsed + "\n");
-            stringBuffer.append("Acceleration: " + car.acceleration + "\n");
-            stringBuffer.append("Top Speed: " + car.topSpeed + "\n");
-            stringBuffer.append("Current Speed: " + car.currentSpeed + "\n");
+            stringBuffer.append("CAR ID " + car.carID + "\n");
+            stringBuffer.append("Distance covered: " + (int) car.currentDistTravelled + "\n");
+            stringBuffer.append("NITROUS USED: " + car.isNitroUsed + "\n");
+            stringBuffer.append("ACCELERATION: " + car.acceleration + "\n");
+            stringBuffer.append("TOP SPEED: " + car.topSpeed + "\n");
+            stringBuffer.append("CURRENT SPEED: " + car.currentSpeed + "\n");
             stringBuffer.append("Car " + car.carID + " Finish Time: " + car.totalTimeTakenSeconds + " seconds" + "\n");
         }
 
