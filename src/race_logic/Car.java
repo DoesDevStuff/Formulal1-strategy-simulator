@@ -17,7 +17,7 @@ public class Car extends Thread {
 	//as its value may change outside of the scope of the program
 	//read more on "volatile" in the context of multi-threading + multiprocessor
 	private static volatile boolean startFlag = false;
-	private static volatile boolean terminateFlag = false;
+	private volatile boolean terminateFlag = false;
 
 	//MainClass.terminateThreadsAfterSeconds tells how many seconds a thread will run
 	private static int runGranularityMs = 2000; //loop wait, see the while loop inside run(); 2 secs
@@ -34,15 +34,15 @@ public class Car extends Thread {
 	}
 
 	//terminates all threads. note the static
-	public static void terminateAllThreads() {
+	public void terminateAllThreads() {
 		terminateFlag = true;
 	}
 // These are class members }
 	
 	// instance members start here:
 	int carID; // every car will have a unique id starting from 1
-	ArrayList<Car> totalCars = null; //reference to total cars array in controller	
-	ArrayList<Car> carLane = null;   //reference to the lane this car is in
+	volatile ArrayList<Car> totalCars = null; //reference to total cars array in controller	
+	volatile ArrayList<Car> carLane = null;   //reference to the lane this car is in
 	
 	public int iterationNumner = 0;
 	public boolean isNitroUsed = false;
@@ -57,9 +57,13 @@ public class Car extends Thread {
 	// this will use the system time for now. to calculate next time and current time
 	public double prevElapsedTime = 0;
 	public double elapsedTime = 0;
+
+	double elapsedTimeSeconds;
 	public double currentDistTravelled;
 	public double currentSpeed;
     public double finishTime = 0;
+    public double totalTimeTakenSeconds = 0;
+    
 	
 	// Constructor for Car
 	public Car(int carID, ArrayList<Car> carLane, ArrayList<Car> totalCars, double startPosition){
@@ -96,38 +100,17 @@ public class Car extends Thread {
 			}
 			
 			System.out.println("Mythread: Thread " + carID + " terminated with terminate flag");
+			Sleep.sleepInterval(1000);
 		}
 		catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+		finally {
+			System.out.println("exiting run() method");
+		}
 	}
 
-	/*
-	// this will start the race for all of the car instances
-	// it will take in an argument of time - system time
-	public static boolean AtRaceStart(long startRaceTime){
-		// if the race has started then return false
-		if(isRaceStarted){ 
-			return false;
-		}
-		
-		Car.raceTimeAtStart = startRaceTime; // race time at the start will be set here and will be the same for every instance
-		isRaceStarted = true;
-		return true;
-	}
-	*/
-	
-	// this method does it's calculation based on time since we are doing a discrete calculation.
-	// we will have 2 evaluations for time. One for the controller and the other for the main program interval
-	// the controller will calculate the time intervals passed for the car (we have been asked to check every 2 seconds)
-	// whereas for the main program interval so that will be threaded, this  could be in fractions of a second for each thread
 	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
-/*
-		if (!isRaceStarted) {	// race has not begun yet
-			return false;
-		}
-*/
-		
 		/*
 		 * Since this is a discrete calculation with time we also have tdi = discrete time between intervals
 		 * and velocity changes based on our distance to next car (proximity)
@@ -144,60 +127,62 @@ public class Car extends Thread {
 		 * */
 		
 		//
+		StringBuffer stringBuffer = new StringBuffer();
 		++iterationNumner;
-		System.out.println("---- before --------");
-		System.out.println("iterationNumner: " + iterationNumner);
-		System.out.println("CAR ID " + carID);
-		System.out.println("Elapsed time: " + elapsedTime);
-		System.out.println("DISTANCE COVERED: " + currentDistTravelled);
-		System.out.println("NITROUS USED: " + isNitroUsed);
-		System.out.println("ACCELERATION: " + acceleration);
-		System.out.println("TOP SPEED: " + topSpeed);
-		System.out.println("CURRENT SPEED: " + currentSpeed);
-		System.out.println("---- before --------");
-		System.out.println();
+		stringBuffer.append("---- before --------\n");
+		stringBuffer.append("iterationNumner: " + iterationNumner + "\n");
+		stringBuffer.append("CAR ID " + carID + "\n");
+		stringBuffer.append("Elapsed time: " + elapsedTimeSeconds + "\n");
+		stringBuffer.append("DISTANCE COVERED: " + currentDistTravelled + "\n");
+		stringBuffer.append("NITROUS USED: " + isNitroUsed + "\n");
+		stringBuffer.append("ACCELERATION: " + acceleration + "\n");
+		stringBuffer.append("TOP SPEED: " + topSpeed + "\n");
+		stringBuffer.append("CURRENT SPEED: " + currentSpeed + "\n");
+		stringBuffer.append("---- before --------\n");
+		System.out.println(stringBuffer. toString());
 		//		
 		
-		// check if it's the beginning of the race and if so set the  evaluation time to the race start time (t0)
-		if (prevElapsedTime == 0) {
-			prevElapsedTime = raceTimeAtStart;
-		}
-		
-		elapsedTime = (evalTimeInMilliSeconds - prevElapsedTime) / Constants.SECONDS_TO_MILLISECONDS; // elapsed time in seconds
-		prevElapsedTime = evalTimeInMilliSeconds; // time at previous moves to time at current
+		//elapsedTime is the granularity milliseconds
+		elapsedTime = evalTimeInMilliSeconds; 
 
-		currentSpeed = currentSpeed + (acceleration * elapsedTime); // v1 = u1 + a * tdi
+		//convert to elapsed time in seconds
+		elapsedTimeSeconds = elapsedTime / Constants.SECONDS_TO_MILLISECONDS;		
+
+		currentSpeed = currentSpeed + (acceleration * elapsedTimeSeconds); // v1 = u1 + a * tdi
 		
 		useNitro();
 		limitToTopSpeed();
 		reduceSpeedIfPossibleCollision();
 
-		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTime); //  s = s0 + v1 * tdi
+
+		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTimeSeconds); //  s = s0 + v1 * tdi
 		
 		//
-		System.out.println("---- after --------");
-		System.out.println("iterationNumner: " + iterationNumner);
-		System.out.println("CAR ID " + carID);
-		System.out.println("Elapsed time: " + elapsedTime);
-		System.out.println("DISTANCE COVERED: " + currentDistTravelled);
-		System.out.println("NITROUS USED: " + isNitroUsed);
-		System.out.println("ACCELERATION: " + acceleration);
-		System.out.println("TOP SPEED: " + topSpeed);
-		System.out.println("CURRENT SPEED: " + currentSpeed);
-		System.out.println("---- after --------");
-		System.out.println();
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("---- after --------\n");
+		stringBuffer.append("iterationNumner: " + iterationNumner + "\n");
+		stringBuffer.append("CAR ID " + carID + "\n");
+		stringBuffer.append("Elapsed time: " + elapsedTimeSeconds + "\n");
+		stringBuffer.append("DISTANCE COVERED: " + currentDistTravelled + "\n");
+		stringBuffer.append("NITROUS USED: " + isNitroUsed + "\n");
+		stringBuffer.append("ACCELERATION: " + acceleration + "\n");
+		stringBuffer.append("TOP SPEED: " + topSpeed + "\n");
+		stringBuffer.append("CURRENT SPEED: " + currentSpeed + "\n");
+		stringBuffer.append("---- after --------\n");
+		System.out.println(stringBuffer. toString());
 		//		
 
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
 			carLane.remove(this);
-	        finishTime = evalTimeInMilliSeconds; // Record the finish time
+	        finishTime = System.currentTimeMillis(); // Record the finish time
+	        totalTimeTakenSeconds = (finishTime - raceTimeAtStart) / Constants.SECONDS_TO_MILLISECONDS;
+	        terminateFlag = true;
 		}
 		
 		return true;
 	}
 	
-
 	public boolean limitToTopSpeed() {
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
@@ -229,8 +214,6 @@ public class Car extends Thread {
 	    return true;		
 	}
 	
-	
-
 	private Car findCarInFront() {
 	    int myIndex = carLane.indexOf(this);
 	    //int laneNumber = (currentIndex % 2 == 0) ? 1 : 2; // Determine the lane number based on even or odd index
