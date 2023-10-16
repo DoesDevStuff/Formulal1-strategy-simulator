@@ -5,7 +5,7 @@ import testrace.TestRace;
 
 public class Main {
 	public static void main(String[] args) {
-		boolean runTestCases = true;
+		boolean runTestCases = false;
 		
 		if (runTestCases) {
 			TestRace testRace = new TestRace();
