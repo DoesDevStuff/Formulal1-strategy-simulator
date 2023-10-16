@@ -72,7 +72,7 @@ public class Car extends Thread {
 		this.carLane = carLane;
 		
 		topSpeed = (5.0 * (Constants.BASE_SPEED + (Constants.SPEED_DIFF * carID)) ) / 18.0;;
-		acceleration = Constants.ACCELERATION_DIFF * carID; // the problem statement tells us that it is based on car id
+		acceleration = Constants.BASE_ACCELERATION * (Math.exp(-Constants.ACCELERATION_DIFF * carID) ); // the problem statement tells us that it is based on car id
 		
 		// the start position for each car will be in negatives because each car should start behind the start line
 		currentDistTravelled = startPosition;
