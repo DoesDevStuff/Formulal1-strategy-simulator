@@ -83,7 +83,7 @@ public class Car extends Thread {
 	public void run() {
 		try {
 			System.out.println("Car: Car " + carID + " in Run method, waiting to start business logic");
-			Thread.sleep(runGranularityMs);
+			Sleep.sleepInterval(2500);
 			
 			while(!startFlag) {} // wait for start flag
 			
@@ -96,11 +96,11 @@ public class Car extends Thread {
 				// Calls calculateTimeBased_SpeedDistanceTravelled and passes the evaluation period (runGranularityMs)
 				calculateTimeBased_SpeedDistanceTravelled(runGranularityMs);
 				
-				Thread.sleep(runGranularityMs);
+				Sleep.sleepInterval(2500);
 			}
 			
 			System.out.println("Mythread: Thread " + carID + " terminated with terminate flag");
-			Sleep.sleepInterval(1000);
+			Sleep.sleepInterval(2500);
 		}
 		catch (Exception ex) {
 			System.out.println(ex.getMessage());

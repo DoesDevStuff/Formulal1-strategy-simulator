@@ -1,11 +1,11 @@
-package testrace;
+package race_test_cases;
 
 import java.util.ArrayList;
 
 import race_logic.Car;
 import race_logic.Constants;
 
-public class TestRace {
+public class TestLimitToTopSpeed {
 	
 	boolean result;
 	

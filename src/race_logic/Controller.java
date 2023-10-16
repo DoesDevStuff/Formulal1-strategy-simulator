@@ -128,7 +128,7 @@ public class Controller {
             if (i == (totalCarCount - 1))
             	System.out.println("Race complete! MyWinner: Car " + minCarId);
 
-            //stringBuffer.append(
+            stringBuffer.append("\n");
             stringBuffer.append("CAR ID " + car.carID + "\n");
             stringBuffer.append("Distance covered: " + (int) car.currentDistTravelled + "\n");
             stringBuffer.append("NITROUS USED: " + car.isNitroUsed + "\n");
