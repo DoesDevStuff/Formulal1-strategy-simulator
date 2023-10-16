@@ -72,7 +72,7 @@ public class Car extends Thread {
 		this.carLane = carLane;
 		
 		topSpeed = (5.0 * (Constants.BASE_SPEED + (Constants.SPEED_DIFF * carID)) ) / 18.0;;
-		acceleration = Constants.ACCELERATION_DIFF * carID; // the problem statement tells us that it is based on car id
+		acceleration = Constants.BASE_ACCELERATION * (Math.exp(-Constants.ACCELERATION_DIFF * carID) ); // the problem statement tells us that it is based on car id
 		
 		// the start position for each car will be in negatives because each car should start behind the start line
 		currentDistTravelled = startPosition;
@@ -83,7 +83,7 @@ public class Car extends Thread {
 	public void run() {
 		try {
 			System.out.println("Car: Car " + carID + " in Run method, waiting to start business logic");
-			Thread.sleep(runGranularityMs);
+			Sleep.sleepInterval(2500);
 			
 			while(!startFlag) {} // wait for start flag
 			
@@ -96,11 +96,11 @@ public class Car extends Thread {
 				// Calls calculateTimeBased_SpeedDistanceTravelled and passes the evaluation period (runGranularityMs)
 				calculateTimeBased_SpeedDistanceTravelled(runGranularityMs);
 				
-				Thread.sleep(runGranularityMs);
+				Sleep.sleepInterval(2500);
 			}
 			
 			System.out.println("Mythread: Thread " + carID + " terminated with terminate flag");
-			Sleep.sleepInterval(1000);
+			Sleep.sleepInterval(2500);
 		}
 		catch (Exception ex) {
 			System.out.println(ex.getMessage());
@@ -110,6 +110,28 @@ public class Car extends Thread {
 		}
 	}
 
+	// the string block will be good in the event I have more messages to be printed in which case they can be called with a messageCode
+	// Also really useful when printing translated messages, thus providing a little more language accessibility
+	public String MessageBlock(int messageCode) {
+	    String message = ""; // Initialise an empty string
+
+	    switch (messageCode) {
+	        case 1:
+	            message = " speed limited to top speed";
+	            break;
+	        case 2:
+	            message = " reduced speed due to proximity with the car in front to: ";
+	            break;
+	        case 3:
+	            message = " used Nitro!";
+	            break;
+	        default:
+	            break;
+	    }
+
+	    return message;
+	}
+	
 	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
 		/*
 		 * Since this is a discrete calculation with time we also have tdi = discrete time between intervals
@@ -186,10 +208,11 @@ public class Car extends Thread {
 	public boolean limitToTopSpeed() {
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
-	        System.out.println("Car " + this.carID + " speed limited to top speed");
+	        System.out.println("Car " + this.carID + MessageBlock(1));
+	        return true;
 	    }
 
-        return true;
+        return false;
 	}
 
 	 /*
@@ -208,7 +231,8 @@ public class Car extends Thread {
 
 	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE && proximityWithFrontCar >= 0) {
 	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
-	            System.out.println("Car " + this.carID + " reduced speed due to proximity with the car in front to: " + this.currentSpeed);
+	            System.out.println("Car " + this.carID + MessageBlock(2) + this.currentSpeed);
+
 	    }
 
 	    return true;		
@@ -251,8 +275,7 @@ public class Car extends Thread {
 	    // Boost the speed to double the current speed or top speed, whichever is less
 	    //double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
 	    this.currentSpeed = this.currentSpeed * 2;
-	    System.out.println("Car " + this.carID + " used Nitro!");
-
+	    System.out.println("Car " + this.carID + MessageBlock(3));
 	    return true;
 	}
 
