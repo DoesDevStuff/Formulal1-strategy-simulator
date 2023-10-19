@@ -10,7 +10,9 @@ I have also added test cases to this to test the multi-threaded version of this 
 The idea was to use as many concepts as I could that would be used in industry-standard code and written in a way that prioritised clean code that is easy to debug and test.
 
 ## Problem Statement: 
-
+<details>
+<summary>Original Problem Statement</summary>
+<br>
 In a Formula-1 challenge, there are n teams numbered 1 to n. Each team has a car and a driver. Car’s specification are as follows:
 * Top speed: (150 + 10 * i) km per hour
 * Acceleration: (2 * i) meter per second square.
@@ -20,6 +22,39 @@ In a Formula-1 challenge, there are n teams numbered 1 to n. Each team has a car
 Here i is the team number.
 The cars line up for the race. The start line for (i + 1)th car is 200 * i meters behind the ith car.
 
-All of them start at the same time and try to attain their top speed. A re-assessment of the positions is done every 2 seconds(So even if the car has crossed the finish line in between, you’ll get to know after 2 seconds). During this assessment, each driver checks if there is any car within 10 meters of his car, his speed reduces to: hf * (speed at that moment). Also, if the driver notices that he is the last one on the race, he uses ‘nitro’.
+All of them start at the same time and try to attain their top speed. A re-assessment of the positions is done every 2 seconds (So even if the car has crossed the finish line in between, you’ll get to know after 2 seconds). During this assessment, each driver checks if there is any car within 10 meters of his car, his speed reduces to: hf * (speed at that moment). Also, if the driver notices that he is the last one on the race, he uses ‘nitro’.
 
 Taking the number of teams and length of track as the input, Calculate the final speeds and the corresponding completion times.
+</details>
+
+<b> Modified Statement </b> <br>
+In a Formula-1 challenge, there are n teams numbered 1 to n. Each team has a car and a driver. The car’s specification are as follows:
+1. Top speed: (150 + 10 * i) km per hour
+2. Acceleration: (2 * i) meters per second square.
+3. Handling factor (hf) = 0.8
+4. Nitro: Increases the speed to double or top speed, whichever is less. Can be used only once.
+
+Here is the team number.
+The cars line up for the race. The start line for (i + 1)th car is 200 * i meters behind the ith car.
+
+All of them start at the same time and try to attain their top speed.
+A re-assessment of the positions is done every 2 seconds (So even if the car has crossed the finish line in between, you’ll get to know after 2 seconds).
+During this assessment, each driver checks if there is any car within 10 meters of his car, and his speed reduces to hf * (speed at that moment).
+Also, if the driver notices that he is the last one in the race, he uses ‘nitro’.
+
+Taking the number of teams and length of the track as the input, Calculate the final speeds and the corresponding completion times.
+
+Question: Assuming track length = finish line
+Question: "If the driver notices that he is the last one in the race, he uses nitro" --- Means the last car will use nitro in the first assessment only
+<br>
+
+<b> They look nearly identical! What's the difference? </b> <br>
+While the main specifications have stayed the same the difference is in clarifying the points that were noticed when I started my first implementation.
+1. When does nitro get used? At the start of the race? Towards the end? after and unspecified amount of time? These weren't explicitly mentioned in the main statement.
+2. Not only that some values are assumed by the programmer, eg: The total distance of the race, and when the race is considered "finished" is it when all cars cross the line or the first car that passes the line.
+3. Time calculations. Due to the mentioned checking of conditions every two seconds one needed to clarify if the time was to be seen as continous or discrete. This distinction turned out to be especially important in the physics calculations of speed and other dependent variables of distance.
+
+<ins>Thus came the changes in place which have been written down and are follows:</ins> <br>
+1. Track length is assumed to be the finish line. Race ends when all cars cross the finish line aka the track length
+2. The driver using nitro in the first assessment means they will use it early in the race when realizing they are the last, not waiting for subsequent assessments.
+3. Time was taken as discrete so all of are calculations are done discretely. The decision for this was taken not just because of the problem statement conditions but also because we are told that acceleration is constant and thus we know that changes will change between discrete time intervals.
