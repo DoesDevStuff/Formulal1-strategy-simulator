@@ -6,7 +6,8 @@ import race_test_cases.TestNitroUsed;
 
 public class Main {
 	public static void main(String[] args) {
-		boolean runTestCases = true;
+		// to run the test cases set the boolean to true
+		boolean runTestCases = false;
 		
 		if (runTestCases) {
 			//TestLimitToTopSpeed testRace = new TestLimitToTopSpeed();
