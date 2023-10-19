@@ -50,7 +50,7 @@ Question: "If the driver notices that he is the last one in the race, he uses ni
 
 <b> They look nearly identical! What's the difference? </b> <br>
 While the main specifications have stayed the same the difference is in clarifying the points that were noticed when I started my first implementation.
-1. When does nitro get used? At the start of the race? Towards the end? after and unspecified amount of time? These weren't explicitly mentioned in the main statement.
+1. When does nitro get used? At the start of the race? Towards the end? after an unspecified amount of time? These weren't explicitly mentioned in the main statement.
 2. Not only that some values are assumed by the programmer, eg: The total distance of the race, and when the race is considered "finished" is it when all cars cross the line or the first car that passes the line.
 3. Time calculations. Due to the mentioned checking of conditions every two seconds one needed to clarify if the time was to be seen as continous or discrete. This distinction turned out to be especially important in the physics calculations of speed and other dependent variables of distance.
 
@@ -58,3 +58,38 @@ While the main specifications have stayed the same the difference is in clarifyi
 1. Track length is assumed to be the finish line. Race ends when all cars cross the finish line aka the track length
 2. The driver using nitro in the first assessment means they will use it early in the race when realizing they are the last, not waiting for subsequent assessments.
 3. Time was taken as discrete so all of are calculations are done discretely. The decision for this was taken not just because of the problem statement conditions but also because we are told that acceleration is constant and thus we know that changes will change between discrete time intervals.
+
+# High-level design 
+----------------------------------------------------------------------------------------------------
+Program
+----------------------------------------------------------------------------------------------------
+- Object Car
+  - For each car i:
+  - Constructor:
+      1. arguments:
+         1. array of car objects
+         2. its own index.
+  1. It should construct and insert in the array at its index
+  2. Top speed = ( ( (150 + (10 * i) ) * 5) / 18 ) m/s
+  3. Acceleration = (2 * i) m/s^2
+  4. Others specific to each car
+
+Run time:
+Each car should have 2 functions that will be called every n seconds (2 seconds here)
+1) Calculate current speed and distance teavelled --- CalculateSpeedAndDistanceTravelled()
+2) Reduce speed in case of possible collision with other car --- ReduceSpeedForPossibleCollision()
+3) Increase speed by Nitro if it is the last car IncreaseSpeedWithNitro()
+
+----------------------------------------------------------------------------------------------------
+2) Object Race:
+   - Create instances of cars
+   - Call the 3 functions at regular intervals (2 Sec)
+
+Run time:
+	- Create and add Car objects, passing each of them an array object, and index
+	- In a while loop call the 3 functions
+	- Determine a win
+
+----------------------------------------------------------------------------------------------------
+When multithreading, the car objects themselves can calculate the (3 functions), The Object Race
+just has to monitor every 2 seconds
