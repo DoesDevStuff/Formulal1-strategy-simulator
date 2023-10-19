@@ -2,8 +2,8 @@
 
 ## Introduction
 This was started as a practice project to test my Java programming and was largely influenced by the [Google Formula 1 coding problem](https://www.geeksforgeeks.org/google-interview-question-for-java-position/). <br> Heavy modifications were made to the problem statement after the first implementation to clarify areas that seemed vague to me. <br> Furthermore, I have added two implementations of this problem in this repository: 
-1. Non-threaded attempt
-2. multithreading. <br>
+1. [Non-threaded attempt](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/tree/main/Non%20Threaded%20versions/Improved%20non%20threaded%20version)
+2. [multithreading](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/tree/main/src) <br>
 
 I have also added test cases to this to test the multi-threaded version of this code and added features to this that would make either testing or expansion of this current implementation easier.
 <br>
