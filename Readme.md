@@ -59,7 +59,7 @@ While the main specifications have stayed the same the difference is in clarifyi
 2. The driver using nitro in the first assessment means they will use it early in the race when realizing they are the last, not waiting for subsequent assessments.
 3. Time was taken as discrete so all of are calculations are done discretely. The decision for this was taken not just because of the problem statement conditions but also because we are told that acceleration is constant and thus we know that changes will change between discrete time intervals.
 
-# High-level design 
+### High-level design 
 ----------------------------------------------------------------------------------------------------
 Program
 ----------------------------------------------------------------------------------------------------
