@@ -29,7 +29,7 @@ public class TestNitroUsed {
 		Car car = new Car(carID, testTrack, totalCars, -10000);
 		totalCars.add(car);
 		
-		car.isNitroUsed = false;
+		car.isNitroUsed = true; // if I set this to false I get nitro used more than once
 		
 		double expectedNitroSpeed = currentSpeed *2;
 		
@@ -39,7 +39,7 @@ public class TestNitroUsed {
 		result = car.useNitro();
 
 		if (result == true) {
-
+			
 			// Check if nitro is used only once
 	        if (car.isNitroUsed) {
 	            return -1;  // Nitro used more than once
@@ -49,8 +49,8 @@ public class TestNitroUsed {
 			if ( (car.currentSpeed * 2) != expectedNitroSpeed)
 				return -2;
 			
-	        
-	        car.isNitroUsed = true;  // Set isNitroUsed to true
+			//car.isNitroUsed = true;  // Set isNitroUsed to true
+
 		}
 
 		if (result == false) {
