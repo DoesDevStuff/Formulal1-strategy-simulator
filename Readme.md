@@ -93,3 +93,37 @@ Run time:
 ----------------------------------------------------------------------------------------------------
 When multithreading, the car objects themselves can calculate the (3 functions), The Object Race
 just has to monitor every 2 seconds
+
+## Code
+I will detail the multi threaded implentation here, primarily because the rest of the functionality is roughly the same in the other non threaded implementation.
+
+----------------------------------------------------------------------------------------------------
+### [Car](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/blob/main/src/race_logic/Car.java)
+----------------------------------------------------------------------------------------------------
+Each car is it's own thread and does it's own calculations. The class is designed for concurrent execution, with shared flags controlling the start and termination of threads. <br>
+1. <b> Class Structure:</b>
+- The class extends Thread, indicating it's designed for concurrent execution.
+- It has both class-level and instance-level members.
+
+2. <b> Class-level Members:</b>
+- startFlag and terminateFlag are shared among all instances. They control the start and termination of threads.
+- runGranularityMs is a static variable defining the loop wait time within the run method.
+- isRaceStarted is a static variable indicating if the race has started.
+
+3. Instance-level Members:
+- Various properties represent information about each car, including ID, speed, acceleration, distance travelled, etc.
+- carLane and totalCars are references to arrays of cars, facilitating communication between cars.
+- The startAllThreads and terminateAllThreads methods modify class-level flags.
+
+4. Methods:
+- run: Implements the main logic of each car's behaviour during the race. It calculates distances, speeds, and checks for collisions.
+- calculateTimeBased_SpeedDistanceTravelled: Updates speed and distance based on time intervals. Checks for nitro usage, collision, and race completion.
+- limitToTopSpeed: Ensures the car's speed does not exceed its top speed.
+- reduceSpeedIfPossibleCollision: Reduces speed if there's a risk of collision with the car in front.
+- findCarInFront: Finds the car immediately in front to check for collision.
+- useNitro: Boosts speed if the car is the last in both lanes and hasn't used nitro before.
+- isLastCarInBothLanes: Checks if the current car is the last in terms of distance travelled in both lanes.
+
+5. Thread Handling:
+- The run method handles the execution logic, waiting for a start signal and terminating when the termination flag is set.
+- Various sleep intervals are used for synchronization.
