@@ -279,6 +279,7 @@ public class Car extends Thread {
 	    return true;
 	}
 
+	/*
 	// Helper method to check if this car is the last in both lanes
 	private boolean isLastCarInBothLanes() {
 	    int currentLaneIndex = totalCars.indexOf(this);
@@ -286,5 +287,21 @@ public class Car extends Thread {
 
 	    return currentLaneIndex >= (laneSize - 1);
 	}
-   
+   */
+	// Helper method to check if this car has the lowest distance travelled in both lanes
+	private boolean isLastCarInBothLanes() {
+	    double currentDistance = this.currentDistTravelled;
+	    int totalCarsCount = totalCars.size();
+
+	    for (int i = 0; i < totalCarsCount; i++) {
+	        Car otherCar = totalCars.get(i);
+
+	        // Check if the other car has a lower distance travelled
+	        if (otherCar != this && otherCar.currentDistTravelled < currentDistance) {
+	            return false;
+	        }
+	    }
+
+	    return true;
+	}
 }
