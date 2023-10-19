@@ -59,11 +59,11 @@ While the main specifications have stayed the same the difference is in clarifyi
 2. The driver using nitro in the first assessment means they will use it early in the race when realizing they are the last, not waiting for subsequent assessments.
 3. Time was taken as discrete so all of are calculations are done discretely. The decision for this was taken not just because of the problem statement conditions but also because we are told that acceleration is constant and thus we know that changes will change between discrete time intervals.
 
-### High-level design 
+## High-level design 
 ----------------------------------------------------------------------------------------------------
-Program
+### Program
 ----------------------------------------------------------------------------------------------------
-- Object Car
+1. Object Car
   - For each car i:
   - Constructor:
       1. arguments:
@@ -81,7 +81,7 @@ Each car should have 2 functions that will be called every n seconds (2 seconds 
 3) Increase speed by Nitro if it is the last car IncreaseSpeedWithNitro()
 
 ----------------------------------------------------------------------------------------------------
-2) Object Race:
+2. Object Race:
    - Create instances of cars
    - Call the 3 functions at regular intervals (2 Sec)
 
