@@ -116,7 +116,7 @@ Each car is it's own thread and does it's own calculations. The class is designe
 - The startAllThreads and terminateAllThreads methods modify class-level flags.
 
 4. <b> Methods:</b>
-- run: Implements the main logic of each car's behaviour during the race. It calculates distances, speeds, and checks for collisions.
+- run: Implements the main logic of each car's behaviour during the race. It calculates distances, speeds, and checks for collisions. [Link](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/blob/51063e0ce4463ea451d966fe197f33b3998dfa98/src/race_logic/Car.java#L83-L111)
 - calculateTimeBased_SpeedDistanceTravelled: Updates speed and distance based on time intervals. Checks for nitro usage, collision, and race completion.
 - limitToTopSpeed: Ensures the car's speed does not exceed its top speed.
 - reduceSpeedIfPossibleCollision: Reduces speed if there's a risk of collision with the car in front.
