@@ -110,12 +110,12 @@ Each car is it's own thread and does it's own calculations. The class is designe
 - runGranularityMs is a static variable defining the loop wait time within the run method.
 - isRaceStarted is a static variable indicating if the race has started.
 
-3. Instance-level Members:
+3. <b>Instance-level Members:</b>
 - Various properties represent information about each car, including ID, speed, acceleration, distance travelled, etc.
 - carLane and totalCars are references to arrays of cars, facilitating communication between cars.
 - The startAllThreads and terminateAllThreads methods modify class-level flags.
 
-4. Methods:
+4. <b>Methods:</b>
 - run: Implements the main logic of each car's behaviour during the race. It calculates distances, speeds, and checks for collisions.
 - calculateTimeBased_SpeedDistanceTravelled: Updates speed and distance based on time intervals. Checks for nitro usage, collision, and race completion.
 - limitToTopSpeed: Ensures the car's speed does not exceed its top speed.
@@ -124,6 +124,10 @@ Each car is it's own thread and does it's own calculations. The class is designe
 - useNitro: Boosts speed if the car is the last in both lanes and hasn't used nitro before.
 - isLastCarInBothLanes: Checks if the current car is the last in terms of distance travelled in both lanes.
 
-5. Thread Handling:
+5. <b>Thread Handling:</b>
 - The run method handles the execution logic, waiting for a start signal and terminating when the termination flag is set.
 - Various sleep intervals are used for synchronization.
+
+----------------------------------------------------------------------------------------------------
+### [Controller](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/blob/main/src/race_logic/Controller.java)
+----------------------------------------------------------------------------------------------------
