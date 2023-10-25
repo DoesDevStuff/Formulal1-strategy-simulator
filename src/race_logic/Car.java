@@ -133,36 +133,9 @@ public class Car extends Thread {
 	}
 	
 	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
-		/*
-		 * Since this is a discrete calculation with time we also have tdi = discrete time between intervals
-		 * and velocity changes based on our distance to next car (proximity)
-		 * u = initial velocity, v = final velocity, s = displacement, t = time, a = acceleration  
-		 * 
-		 * 
-		 * now distance = speed x time; v = u + at 
-		 * 
-		 * At t0 , u0 = 0, v0 = 0, s0 = 0
-		 * 
-		 * t1, u1 = v0, v1 = u1 + a * tdi, s = s0 + v1 * tdi   // here distance is previous distance + next distance based on discrete time interval
-		 * t2, u2 = v1, v2 = u2 + a * tdi, s = s1 + v2 * tdi
-		 * and so on....
-		 * */
-		
-		//
-		StringBuffer stringBuffer = new StringBuffer();
-		++iterationNumner;
-		stringBuffer.append("---- before --------\n");
-		stringBuffer.append("iterationNumner: " + iterationNumner + "\n");
-		stringBuffer.append("CAR ID " + carID + "\n");
-		stringBuffer.append("Elapsed time: " + elapsedTimeSeconds + "\n");
-		stringBuffer.append("DISTANCE COVERED: " + currentDistTravelled + "\n");
-		stringBuffer.append("NITROUS USED: " + isNitroUsed + "\n");
-		stringBuffer.append("ACCELERATION: " + acceleration + "\n");
-		stringBuffer.append("TOP SPEED: " + topSpeed + "\n");
-		stringBuffer.append("CURRENT SPEED: " + currentSpeed + "\n");
-		stringBuffer.append("---- before --------\n");
-		System.out.println(stringBuffer. toString());
-		//		
+		boolean debug = true;
+
+		if(debug) DebugHelper.speedDistanceDbg1(this, true);
 		
 		//elapsedTime is the granularity milliseconds
 		elapsedTime = evalTimeInMilliSeconds; 
@@ -179,21 +152,8 @@ public class Car extends Thread {
 
 		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTimeSeconds); //  s = s0 + v1 * tdi
 		
-		//
-		stringBuffer = new StringBuffer();
-		stringBuffer.append("---- after --------\n");
-		stringBuffer.append("iterationNumner: " + iterationNumner + "\n");
-		stringBuffer.append("CAR ID " + carID + "\n");
-		stringBuffer.append("Elapsed time: " + elapsedTimeSeconds + "\n");
-		stringBuffer.append("DISTANCE COVERED: " + currentDistTravelled + "\n");
-		stringBuffer.append("NITROUS USED: " + isNitroUsed + "\n");
-		stringBuffer.append("ACCELERATION: " + acceleration + "\n");
-		stringBuffer.append("TOP SPEED: " + topSpeed + "\n");
-		stringBuffer.append("CURRENT SPEED: " + currentSpeed + "\n");
-		stringBuffer.append("---- after --------\n");
-		System.out.println(stringBuffer. toString());
-		//		
-
+		if(debug) DebugHelper.speedDistanceDbg1(this, false);
+		
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
 			carLane.remove(this);
