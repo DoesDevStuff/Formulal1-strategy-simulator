@@ -135,7 +135,7 @@ public class Car extends Thread {
 	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
 		boolean debug = true;
 
-		if(debug) DebugHelper.speedDistanceDbg1(this, true);
+		DebugHelper.speedDistanceDbg1(debug, this, true);
 		
 		//elapsedTime is the granularity milliseconds
 		elapsedTime = evalTimeInMilliSeconds; 
@@ -152,7 +152,7 @@ public class Car extends Thread {
 
 		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTimeSeconds); //  s = s0 + v1 * tdi
 		
-		if(debug) DebugHelper.speedDistanceDbg1(this, false);
+		DebugHelper.speedDistanceDbg1(debug, this, false);
 		
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {

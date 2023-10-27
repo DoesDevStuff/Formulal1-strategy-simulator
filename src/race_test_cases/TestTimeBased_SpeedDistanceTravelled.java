@@ -5,19 +5,36 @@ import race_logic.Constants;
 import race_logic.Car;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TestTimeBased_SpeedDistanceTravelled {
+	ArrayList<Integer> resultCodes = new ArrayList<Integer>();
+	ArrayList<String> resultMessages = new ArrayList<String>();
+	
+	public boolean testTimeBased_SpeedDistanceTravelled() {
+		Collections.addAll(resultCodes, 0, -1, -2, -3);
+		Collections.addAll(resultMessages,
+				"All test conditions passed for this test case.",
+				"Acceleration not calculated correctly for car",
+				"Initial position not set correctly for car",
+				"calculateTimeBased_SpeedDistanceTravelled failed for car" );
+		
+		int resultCode = (testCalculateTimeBased_SpeedDistanceTravelled(1, 10));
+		
+		if (resultCode > 0 || resultCode < -3) {
+			System.out.println("Wrong Error Code Returned: " + resultCode);
+			return false;
+		}
+		
+		int index = resultCodes.indexOf(resultCode);
+		System.out.println(resultMessages.get(index));
+		
+		boolean returnFlag = ( (resultCode == 0 ) ? true : false );
+		return returnFlag;
+	}
 
-    public boolean runTestCases() {
-        boolean allPassed = true;
 
-        if (!testCalculateTimeBased_SpeedDistanceTravelled(1, 10)) {
-            allPassed = false;
-        }
-        return allPassed;
-    }
-
-    boolean testCalculateTimeBased_SpeedDistanceTravelled(int carID, double currentSpeed) {
+    int testCalculateTimeBased_SpeedDistanceTravelled(int carID, double currentSpeed) {
         double expectedAcceleration = findAccelerationFromID(carID);
         double expectedStartPosition = findStartPositionFromID(carID);
 
@@ -26,15 +43,11 @@ public class TestTimeBased_SpeedDistanceTravelled {
 
         Car car = new Car(carID, testTrack, totalCars, expectedStartPosition);
 
-        if (car.acceleration != expectedAcceleration) {
-            System.out.println("Acceleration not calculated correctly for car " + carID);
-            return false;
-        }
+        if (car.acceleration != expectedAcceleration)
+            return -1;
 
-        if (car.currentDistTravelled != expectedStartPosition) {
-            System.out.println("Initial position not set correctly for car " + carID);
-            return false;
-        }
+        if (car.currentDistTravelled != expectedStartPosition)
+            return -2;
 
         // Variables for time and distance
         double totalTime = 16.0;  // Total time in seconds
@@ -46,18 +59,15 @@ public class TestTimeBased_SpeedDistanceTravelled {
             // Call calculateTimeBased_SpeedDistanceTravelled for each step
             boolean result = car.calculateTimeBased_SpeedDistanceTravelled((long) (stepTime * 1000));
 
-            if (!result) {
-                System.out.println("calculateTimeBased_SpeedDistanceTravelled failed for car " + carID + " at step " + i);
-                return false;
-            }
+            if (!result)
+                return -3;
 
             // Print the state of the car after each step
             System.out.println("\n" + "Step " + (i + 1) + ": Current Speed = " + car.currentSpeed +
                     ", Current Distance = " + car.currentDistTravelled);
         }
-
-		System.out.println("All test conditions passed for this test case.");
-        return true;
+        
+        return 0;
     }
 
     double findAccelerationFromID(int carID) {

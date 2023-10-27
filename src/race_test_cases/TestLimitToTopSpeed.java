@@ -16,15 +16,6 @@ public class TestLimitToTopSpeed {
 		return errorMessage;
 	}
 
-	public boolean runTestCases() {
-		boolean allpassed = true;
-
-		if (!testLimitTopSpeedInCarObject())
-			allpassed = false;
-		
-		return allpassed;
-	}
-	
 	int testLimitToTopSpeed(int carID, double currentSpeed) {
 		ArrayList<Car> totalCars = new ArrayList<Car>();
 		ArrayList<Car> testTrack = new ArrayList<Car>();

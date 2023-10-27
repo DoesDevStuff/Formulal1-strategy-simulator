@@ -1,10 +1,10 @@
 package race_logic;
 
 public class DebugHelper {
-	public static boolean debugGlobal = true;
+	public static boolean debugGlobal = false;
 
-	public static void speedDistanceDbg1(Car car, boolean before) {
-		if (!debugGlobal) return; // FFF - if this is false turns off debugging at global level
+	public static void speedDistanceDbg1(boolean localDebug, Car car, boolean before) {
+		if ( (!DebugHelper.debugGlobal) || (!localDebug) ) return; // FFF - if this is false turns off debugging at global level
 		
 		String beforeMsg = "---- before --------\n";
 		String afterMsg = "---- after --------\n";
@@ -28,4 +28,10 @@ public class DebugHelper {
 		//		
 
 	}
+	
+	public static void speedDistanceDbg2(boolean localDebug, Car car, boolean before) {
+		if ( (!DebugHelper.debugGlobal) || (!localDebug) ) return; // FFF - if this is false turns off debugging at global level
+		
+	}
+
 }

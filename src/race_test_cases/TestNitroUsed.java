@@ -7,7 +7,7 @@ import race_logic.Car;
 public class TestNitroUsed {
 	boolean result;
 	
-	public boolean runTestCases() {
+	public boolean testNitroUsed() {
 		boolean allpassed = true;
 
 		if (testNitroUsedSpeedChangedInCarObject(2, 50) != 0)

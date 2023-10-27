@@ -3,9 +3,10 @@ package race_message_bundles;
 public class MessageBundleSpanish extends MessagebundleBase {
 	
 	public MessageBundleSpanish() {
-		incorrectValue = "Incorrect value Spanish";
-		invalidRange = "Invalid range Spanish";
-		invalidName = "Invalid Name Spanish";
+		programGreeting = "Bienvenido al simulador de carreras de autos";
+		incorrectValue = "Valor incorrecto";
+		invalidRange = "Rango no válido";
+		invalidName = "Nombre no válido";
 	}
 
 }
