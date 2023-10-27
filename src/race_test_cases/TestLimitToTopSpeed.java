@@ -16,15 +16,6 @@ public class TestLimitToTopSpeed {
 		return errorMessage;
 	}
 
-	public boolean runTestCases() {
-		boolean allpassed = true;
-
-		if (!testLimitTopSpeedInCarObject())
-			allpassed = false;
-		
-		return allpassed;
-	}
-	
 	int testLimitToTopSpeed(int carID, double currentSpeed) {
 		ArrayList<Car> totalCars = new ArrayList<Car>();
 		ArrayList<Car> testTrack = new ArrayList<Car>();
@@ -41,15 +32,11 @@ public class TestLimitToTopSpeed {
 		double currentSpeedBefore = currentSpeed;
 		
 		result = car.limitToTopSpeed();
-		if (result == true) {
-			if (car.currentSpeed != expectedTopSpeed)
+		if ( (result == true) && (car.currentSpeed != expectedTopSpeed) )
 				return -2;
-		}
 
-		if (result == false) {
-			if (car.currentSpeed != currentSpeedBefore)
+		if ( (result == false) && (car.currentSpeed != currentSpeedBefore) )
 				return -3;
-		}
 		
 		return 0;
 	} 
@@ -69,21 +56,18 @@ public class TestLimitToTopSpeed {
 		int count = carIDs.length;
 		
 		for (int i = 0; i < count; i++) {
-			if (testLimitToTopSpeed(carIDs[i], speeds[i]) == -1)
+			int returnCode = testLimitToTopSpeed(carIDs[i], speeds[i]);
+			
+			if (returnCode < 0)
+				errorsOccured = true;
+			
+			if (returnCode == -1)
 				++countOfFailedConstuctorTopSpeedCalculationFailure;
-
-			if (testLimitToTopSpeed(carIDs[i], speeds[i]) == -2)
+			if (returnCode == -2)
 				++countOfFailedNotSettingTopSpeed;
-
-			if (testLimitToTopSpeed(carIDs[i], speeds[i]) == -3)
+			if (returnCode == -3)
 				++countOfFailedSettingTopSpeedWrongly;
 		}
-
-		errorsOccured = ( (countOfFailedConstuctorTopSpeedCalculationFailure > 0 ) ||
-							 (countOfFailedNotSettingTopSpeed > 0 ) ||
-							 (countOfFailedSettingTopSpeedWrongly > 0 )
-						);
-		
 
 		if (!errorsOccured) {
 			System.out.println("No errors occured");

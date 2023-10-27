@@ -112,7 +112,7 @@ public class Car extends Thread {
 
 	// the string block will be good in the event I have more messages to be printed in which case they can be called with a messageCode
 	// Also really useful when printing translated messages, thus providing a little more language accessibility
-	public String MessageBlock(int messageCode) {
+	public String MessageBundle(int messageCode) {
 	    String message = ""; // Initialise an empty string
 
 	    switch (messageCode) {
@@ -133,36 +133,9 @@ public class Car extends Thread {
 	}
 	
 	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
-		/*
-		 * Since this is a discrete calculation with time we also have tdi = discrete time between intervals
-		 * and velocity changes based on our distance to next car (proximity)
-		 * u = initial velocity, v = final velocity, s = displacement, t = time, a = acceleration  
-		 * 
-		 * 
-		 * now distance = speed x time; v = u + at 
-		 * 
-		 * At t0 , u0 = 0, v0 = 0, s0 = 0
-		 * 
-		 * t1, u1 = v0, v1 = u1 + a * tdi, s = s0 + v1 * tdi   // here distance is previous distance + next distance based on discrete time interval
-		 * t2, u2 = v1, v2 = u2 + a * tdi, s = s1 + v2 * tdi
-		 * and so on....
-		 * */
-		
-		//
-		StringBuffer stringBuffer = new StringBuffer();
-		++iterationNumner;
-		stringBuffer.append("---- before --------\n");
-		stringBuffer.append("iterationNumner: " + iterationNumner + "\n");
-		stringBuffer.append("CAR ID " + carID + "\n");
-		stringBuffer.append("Elapsed time: " + elapsedTimeSeconds + "\n");
-		stringBuffer.append("DISTANCE COVERED: " + currentDistTravelled + "\n");
-		stringBuffer.append("NITROUS USED: " + isNitroUsed + "\n");
-		stringBuffer.append("ACCELERATION: " + acceleration + "\n");
-		stringBuffer.append("TOP SPEED: " + topSpeed + "\n");
-		stringBuffer.append("CURRENT SPEED: " + currentSpeed + "\n");
-		stringBuffer.append("---- before --------\n");
-		System.out.println(stringBuffer. toString());
-		//		
+		boolean debug = true;
+
+		DebugHelper.speedDistanceDbg1(debug, this, true);
 		
 		//elapsedTime is the granularity milliseconds
 		elapsedTime = evalTimeInMilliSeconds; 
@@ -179,21 +152,8 @@ public class Car extends Thread {
 
 		currentDistTravelled = currentDistTravelled + (currentSpeed * elapsedTimeSeconds); //  s = s0 + v1 * tdi
 		
-		//
-		stringBuffer = new StringBuffer();
-		stringBuffer.append("---- after --------\n");
-		stringBuffer.append("iterationNumner: " + iterationNumner + "\n");
-		stringBuffer.append("CAR ID " + carID + "\n");
-		stringBuffer.append("Elapsed time: " + elapsedTimeSeconds + "\n");
-		stringBuffer.append("DISTANCE COVERED: " + currentDistTravelled + "\n");
-		stringBuffer.append("NITROUS USED: " + isNitroUsed + "\n");
-		stringBuffer.append("ACCELERATION: " + acceleration + "\n");
-		stringBuffer.append("TOP SPEED: " + topSpeed + "\n");
-		stringBuffer.append("CURRENT SPEED: " + currentSpeed + "\n");
-		stringBuffer.append("---- after --------\n");
-		System.out.println(stringBuffer. toString());
-		//		
-
+		DebugHelper.speedDistanceDbg1(debug, this, false);
+		
 		// if Car has crossed the finish line i.e travelled the race length then remove it from the track
 		if(currentDistTravelled >= Constants.RACE_LENGTH_METRES) {
 			carLane.remove(this);
@@ -208,7 +168,7 @@ public class Car extends Thread {
 	public boolean limitToTopSpeed() {
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
-	        System.out.println("Car " + this.carID + MessageBlock(1));
+	        System.out.println("Car " + this.carID + MessageBundle(1));
 	        return true;
 	    }
 
@@ -231,7 +191,7 @@ public class Car extends Thread {
 
 	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE && proximityWithFrontCar >= 0) {
 	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
-	            System.out.println("Car " + this.carID + MessageBlock(2) + this.currentSpeed);
+	            System.out.println("Car " + this.carID + MessageBundle(2) + this.currentSpeed);
 
 	    }
 
@@ -268,14 +228,14 @@ public class Car extends Thread {
 	    if ( (isNitroUsed) || (!isLastCarInBothLanes()) ) { 
 	        return false;
 	    }
-
+	    
 	    // Use Nitro only once
 	    isNitroUsed = true;
 
 	    // Boost the speed to double the current speed or top speed, whichever is less
 	    //double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
 	    this.currentSpeed = this.currentSpeed * 2;
-	    System.out.println("Car " + this.carID + MessageBlock(3));
+	    System.out.println("Car " + this.carID + MessageBundle(3));
 	    return true;
 	}
 
