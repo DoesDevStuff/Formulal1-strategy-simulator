@@ -59,7 +59,27 @@ While the main specifications have stayed the same the difference is in clarifyi
 2. The driver using nitro in the first assessment means they will use it early in the race when realizing they are the last, not waiting for subsequent assessments.
 3. Time was taken as discrete so all of are calculations are done discretely. The decision for this was taken not just because of the problem statement conditions but also because we are told that acceleration is constant and thus we know that changes will change between discrete time intervals.
 
-## High-level design 
+## High-level design
+----------------------------------------------------------------------------------------------------
+### Code Structure
+----------------------------------------------------------------------------------------------------
+The structure is split into 4 packages:
+1. race_logic : This holds the main logic for the running of this project. It includes the following classes:
+	1. Car.java : This is the individual class that runs all the calculations for each Car. This is also running as a thread.
+ 	2. Constants.java : Contains all the global constant values
+  	3. Controller.java : This is the class that drives the race simulation and prints out the final race statistics.
+   	4. DebugHelper.java : This is a helper class that is responsible for printing all the debug statements. This can be turned off globally for the whole application or individually within the respective methods / classes.
+   	5. Sleep.java : Custom Sleep class written to avoid writing repetitive try catch blocks for each instance that we wanted to call the sleep method.
+2. race_simulator : This contains the Main.java which is the entry point for this application. It calls an instance of the race controller as well as runs the test cases if needed.
+3. race_message_bundle : This contains the code that provides localisation support for the messages we would want to print for the race. It contains the following classes :
+	1. MessageBundleBase.java.
+ 	2. MessageBundleEnglish.java : Inherits functionality from the Base class and provides support in English.
+  	3. MessageBundleSpanish.java : Inherits functionality from the Base class and provides support in Spanish.
+4. race_test_cases : This contains our testcases for each method we wanted to test in isolation. It contains the following classes :
+	1. AllTestCases.java : This is test case controller and creates instances for the other tescases to be run as a suite.
+ 	2. TestNitroUsed.java : Test case to check if the method for using Nitro is evaluated correctly.
+  	3. TestLimitToTopSpeed.java : This checks if our calculations for limiting top speed and other conditions are being correctly calculated.
+   	4. TestTimeBased_SpeedDistanceTravelled.java : This check if cars are correctly estimationg the speed and distance at the discrete intervals as intended.
 ----------------------------------------------------------------------------------------------------
 ### Program
 ----------------------------------------------------------------------------------------------------
@@ -92,42 +112,4 @@ Run time:
 
 ----------------------------------------------------------------------------------------------------
 When multithreading, the car objects themselves can calculate the (3 functions), The Object Race
-just has to monitor every 2 seconds
-
-## Code
-I will detail the multi threaded implentation here, primarily because the rest of the functionality is roughly the same in the other non threaded implementation.
-
-----------------------------------------------------------------------------------------------------
-### [Car](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/blob/main/src/race_logic/Car.java)
-----------------------------------------------------------------------------------------------------
-Each car is it's own thread and does it's own calculations. The class is designed for concurrent execution, with shared flags controlling the start and termination of threads. <br>
-1. <b> Class Structure:</b>
-- The class extends Thread, indicating it's designed for concurrent execution.
-- It has both class-level and instance-level members.
-
-2. <b> Class-level Members:</b>
-- startFlag and terminateFlag are shared among all instances. They control the start and termination of threads.
-- runGranularityMs is a static variable defining the loop wait time within the run method.
-- isRaceStarted is a static variable indicating if the race has started.
-
-3. <b> Instance-level Members:</b>
-- Various properties represent information about each car, including ID, speed, acceleration, distance travelled, etc.
-- carLane and totalCars are references to arrays of cars, facilitating communication between cars.
-- The startAllThreads and terminateAllThreads methods modify class-level flags.
-
-4. <b> Methods:</b>
-- run: Implements the main logic of each car's behaviour during the race. It calculates distances, speeds, and checks for collisions. [Link](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/blob/51063e0ce4463ea451d966fe197f33b3998dfa98/src/race_logic/Car.java#L83-L111)
-- calculateTimeBased_SpeedDistanceTravelled: Updates speed and distance based on time intervals. Checks for nitro usage, collision, and race completion.
-- limitToTopSpeed: Ensures the car's speed does not exceed its top speed.
-- reduceSpeedIfPossibleCollision: Reduces speed if there's a risk of collision with the car in front.
-- findCarInFront: Finds the car immediately in front to check for collision.
-- useNitro: Boosts speed if the car is the last in both lanes and hasn't used nitro before.
-- isLastCarInBothLanes: Checks if the current car is the last in terms of distance travelled in both lanes.
-
-5. <b> Thread Handling:</b>
-- The run method handles the execution logic, waiting for a start signal and terminating when the termination flag is set.
-- Various sleep intervals are used for synchronization.
-
-----------------------------------------------------------------------------------------------------
-### [Controller](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/blob/main/src/race_logic/Controller.java)
-----------------------------------------------------------------------------------------------------
+just has to monitor every 2 seconds.
