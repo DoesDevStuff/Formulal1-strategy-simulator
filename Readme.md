@@ -64,18 +64,18 @@ While the main specifications have stayed the same the difference is in clarifyi
 ### Code Structure
 ----------------------------------------------------------------------------------------------------
 The structure is split into 4 packages:
-1. race_logic : This holds the main logic for the running of this project. It includes the following classes:
+1. <b>race_logic : </b> <br> This holds the main logic for the running of this project. It includes the following classes :
 	1. Car.java : This is the individual class that runs all the calculations for each Car. This is also running as a thread.
  	2. Constants.java : Contains all the global constant values
   	3. Controller.java : This is the class that drives the race simulation and prints out the final race statistics.
    	4. DebugHelper.java : This is a helper class that is responsible for printing all the debug statements. This can be turned off globally for the whole application or individually within the respective methods / classes.
    	5. Sleep.java : Custom Sleep class written to avoid writing repetitive try catch blocks for each instance that we wanted to call the sleep method.
-2. race_simulator : This contains the Main.java which is the entry point for this application. It calls an instance of the race controller as well as runs the test cases if needed.
-3. race_message_bundle : This contains the code that provides localisation support for the messages we would want to print for the race. It contains the following classes :
+2. <b>race_simulator : </b> <br> This contains the Main.java which is the entry point for this application. It calls an instance of the race controller as well as runs the test cases if needed.
+3. <b>race_message_bundle : </b> <br> This contains the code that provides localisation support for the messages we would want to print for the race. It contains the following classes :
 	1. MessageBundleBase.java.
  	2. MessageBundleEnglish.java : Inherits functionality from the Base class and provides support in English.
   	3. MessageBundleSpanish.java : Inherits functionality from the Base class and provides support in Spanish.
-4. race_test_cases : This contains our testcases for each method we wanted to test in isolation. It contains the following classes :
+4. <b>race_test_cases : </b> <br> This contains our testcases for each method we wanted to test in isolation. It contains the following classes :
 	1. AllTestCases.java : This is test case controller and creates instances for the other tescases to be run as a suite.
  	2. TestNitroUsed.java : Test case to check if the method for using Nitro is evaluated correctly.
   	3. TestLimitToTopSpeed.java : This checks if our calculations for limiting top speed and other conditions are being correctly calculated.
