@@ -132,6 +132,7 @@ public class Car extends Thread {
 	    return message;
 	}
 	
+
 	public boolean calculateTimeBased_SpeedDistanceTravelled(long evalTimeInMilliSeconds) {
 		boolean debug = true;
 
@@ -166,9 +167,11 @@ public class Car extends Thread {
 	}
 	
 	public boolean limitToTopSpeed() {
+		boolean debug = true;
+
 	    if (this.currentSpeed > this.topSpeed) {
 	        this.currentSpeed = this.topSpeed;
-	        System.out.println("Car " + this.carID + MessageBundle(1));
+			DebugHelper.limitTopSpeedDbg(debug, this, true);
 	        return true;
 	    }
 
@@ -181,6 +184,8 @@ public class Car extends Thread {
 	 * This ensures that each car is checking for the distance to the car immediately in front of it in the same lane
 	 */
 	public boolean reduceSpeedIfPossibleCollision() {
+		boolean debug = true;
+		
 		// logic to reduce the speed if we detect possible collision
 		Car frontCar = findCarInFront();
 		
@@ -191,7 +196,7 @@ public class Car extends Thread {
 
 	        if (proximityWithFrontCar <= Constants.COLLISION_RANGE && proximityWithFrontCar >= 0) {
 	            this.currentSpeed *= Constants.REDUCE_SPEED_FACTOR;
-	            System.out.println("Car " + this.carID + MessageBundle(2) + this.currentSpeed);
+	            DebugHelper.reduceSpeedCollisionDbg(debug, this, true);
 
 	    }
 
@@ -224,6 +229,8 @@ public class Car extends Thread {
 	 * This ensures that only one car uses Nitro when they are in the same position in different lanes.
 	 */
 	public boolean useNitro() {
+		boolean debug = true;
+		
 		// return if nitro has already been used or if the car is not the last in both lanes
 	    if ( (isNitroUsed) || (!isLastCarInBothLanes()) ) { 
 	        return false;
@@ -235,7 +242,7 @@ public class Car extends Thread {
 	    // Boost the speed to double the current speed or top speed, whichever is less
 	    //double nitroBoost = Math.min(this.currentSpeed * 2, this.topSpeed);
 	    this.currentSpeed = this.currentSpeed * 2;
-	    System.out.println("Car " + this.carID + MessageBundle(3));
+	    DebugHelper.useNitroDbg(debug, this, true);
 	    return true;
 	}
 
