@@ -115,14 +115,12 @@ When multithreading, the car objects themselves can calculate the (3 functions),
 just has to monitor every 2 seconds.
 
 ## Results
-<b> Race Stats output </b>
+<b>1. Race Stats output </b>
 
 ![image](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/assets/74312830/c759fc4e-ea27-4fcd-9d88-ce1f2dd655d6)
 
 ![image](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/assets/74312830/18e8dd4c-15ea-440c-be60-e804c0b74797)
 
-<br>
-
-<b> Test Case output </b>
+<b>2. Test Case output </b>
 
 ![image](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/assets/74312830/a1602c33-2aaf-425d-8725-6a292b2bedcc)
