@@ -1,5 +1,8 @@
 # Formula 1 Race Simulator
 
+![F1_console](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/assets/74312830/507050b3-fc47-4875-8b70-490dc6918f8e)
+
+
 ## Introduction
 This was started as a practice project to test my Java programming and was largely influenced by the [Google Formula 1 coding problem](https://www.geeksforgeeks.org/google-interview-question-for-java-position/). <br> Heavy modifications were made to the problem statement after the first implementation to clarify areas that seemed vague to me. <br> Furthermore, I have added two implementations of this problem in this repository: 
 1. [Non-threaded attempt](https://github.com/DoesDevStuff/Formulal1-strategy-simulator/tree/main/Non%20Threaded%20versions/Improved%20non%20threaded%20version)
