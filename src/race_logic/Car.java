@@ -44,7 +44,7 @@ public class Car extends Thread {
 	volatile ArrayList<Car> totalCars = null; //reference to total cars array in controller	
 	volatile ArrayList<Car> carLane = null;   //reference to the lane this car is in
 	
-	public int iterationNumner = 0;
+	public int iterationNumber = 0;
 	public boolean isNitroUsed = false;
 	
 	// final variables; these are set only once

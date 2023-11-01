@@ -3,6 +3,8 @@ package race_logic;
 import java.util.ArrayList;
 
 public class Controller {
+	public int iteration = 0;
+	
 	ArrayList<Car> totalCars = new ArrayList<Car>();
 	
 	volatile ArrayList<Car> lane1 = new ArrayList<Car>(); // will hold all odd indexed cars
@@ -81,7 +83,9 @@ public class Controller {
 		while(!isRaceFinished) {
 			Sleep.sleepInterval(Constants.CHECK_EVERY_N_SECONDS * Constants.SECONDS_TO_MILLISECONDS);
 			
-			// Debug prints
+		    visualiseRaceProgress(lane1, lane2);
+
+		    // Debug prints
 	        //System.out.println("Lane 1 size: " + lane1.size());
 	        //System.out.println("Lane 2 size: " + lane2.size());
 			
@@ -182,6 +186,58 @@ public class Controller {
     public void printRaceResults(ArrayList<Car> totalCars) {
         printCarStats(totalCars);
         printSortedCarStats(totalCars);
+    }
+
+    public void visualiseRaceProgress(ArrayList<Car> lane1, ArrayList<Car> lane2) {
+    	++iteration;
+    	System.out.println("=====================================================================");
+    	System.out.println("Visualising Race Progress" + " At interval: " + iteration);
+    	System.out.println("=====================================================================");
+        // Clear the console (print newline characters)
+        for (int i = 0; i < 1; i++) {
+            System.out.println();
+        }
+
+        // Print each row of the race
+        for (int i = 0; i < Math.max(lane1.size(), lane2.size()); i++) {
+            printCarRow(lane1, i);
+            //System.out.print("\t\t\t"); // Add some spacing between lanes
+            printCarRow(lane2, i);
+            System.out.println(); // Move to the next line
+        }
+    }
+
+    private static void printCarRow(ArrayList<Car> lane, int rowIndex) {
+        if (rowIndex < lane.size()) {
+            Car car = lane.get(rowIndex);
+
+            // Calculate the initial position relative to the current distance travelled
+            double initialPosition = car.currentDistTravelled - car.currentSpeed * car.elapsedTimeSeconds;
+
+            // Print the car details for the current row
+            System.out.printf("Car %d | %.2f m (%.2f m)\t\t", car.carID, car.currentDistTravelled, initialPosition);
+            printRaceTrack(car);
+        } else {
+            // Print an empty row if there is no car at this row
+            System.out.print(" ");
+        }
+
+        // Move the cursor back to the beginning of the line
+        System.out.print("\r");
+    }
+
+    private static void printRaceTrack(Car car) {
+        int raceLength = Constants.RACE_LENGTH_METRES / Constants.DISPLAY_THRESHOLD_LENGTH;
+        int positionIndex = (int) (car.currentDistTravelled / Constants.DISPLAY_THRESHOLD_LENGTH);
+
+        // Print the race track with cars ordered by ID
+        for (int j = 0; j < raceLength; j++) {
+            if (j == positionIndex) {
+                System.out.print("|" + car.carID + "|");
+            } else {
+                System.out.print("-");
+            }
+        }
     }
 
 }

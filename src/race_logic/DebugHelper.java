@@ -11,10 +11,10 @@ public class DebugHelper {
 		String msg;
 		//
 		StringBuffer stringBuffer = new StringBuffer();
-		++(car.iterationNumner);
+		++(car.iterationNumber);
 		msg = (before) ? beforeMsg : afterMsg;
 		stringBuffer.append(msg);
-		stringBuffer.append("iterationNumner: " + car.iterationNumner + "\n");
+		stringBuffer.append("iterationNumner: " + car.iterationNumber + "\n");
 		stringBuffer.append("CAR ID " + car.carID + "\n");
 		stringBuffer.append("Elapsed time: " + car.elapsedTimeSeconds + "\n");
 		stringBuffer.append("DISTANCE COVERED: " + car.currentDistTravelled + "\n");
