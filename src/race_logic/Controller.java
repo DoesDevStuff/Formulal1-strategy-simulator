@@ -85,6 +85,7 @@ public class Controller {
 			
 		    visualiseRaceProgress(lane1, lane2);
 
+		    clearConsole();
 		    // Debug prints
 	        //System.out.println("Lane 1 size: " + lane1.size());
 	        //System.out.println("Lane 2 size: " + lane2.size());
@@ -106,7 +107,14 @@ public class Controller {
 		return true;
 	}
 
- // Print the car stats at the end of the race
+ private void clearConsole() {
+ 	// Clear the console (print newline characters)
+     for (int i = 0; i < 15; i++) {
+         System.out.println();
+     }
+	}
+
+	// Print the car stats at the end of the race
     public void printCarStats(ArrayList<Car> totalCars) {
 
     	double minTime = -1;
@@ -190,14 +198,11 @@ public class Controller {
 
     public void visualiseRaceProgress(ArrayList<Car> lane1, ArrayList<Car> lane2) {
     	++iteration;
-    	System.out.println("=====================================================================");
+    	System.out.println();
+    	System.out.println("==============================================================================================================================");
     	System.out.println("Visualising Race Progress" + " At interval: " + iteration);
-    	System.out.println("=====================================================================");
-        // Clear the console (print newline characters)
-        for (int i = 0; i < 1; i++) {
-            System.out.println();
-        }
-
+    	System.out.println("==============================================================================================================================");
+        
         // Print each row of the race
         for (int i = 0; i < Math.max(lane1.size(), lane2.size()); i++) {
             printCarRow(lane1, i);
@@ -208,36 +213,35 @@ public class Controller {
     }
 
     private static void printCarRow(ArrayList<Car> lane, int rowIndex) {
-        if (rowIndex < lane.size()) {
-            Car car = lane.get(rowIndex);
-
-            // Calculate the initial position relative to the current distance travelled
-            double initialPosition = car.currentDistTravelled - car.currentSpeed * car.elapsedTimeSeconds;
-
-            // Print the car details for the current row
-            System.out.printf("Car %d | %.2f m (%.2f m)\t\t", car.carID, car.currentDistTravelled, initialPosition);
-            printRaceTrack(car);
-        } else {
-            // Print an empty row if there is no car at this row
-            System.out.print(" ");
-        }
+        System.out.print((rowIndex < lane.size()) ? printCarDetails(lane.get(rowIndex)) : " ");
 
         // Move the cursor back to the beginning of the line
         System.out.print("\r");
     }
 
-    private static void printRaceTrack(Car car) {
+    private static String printCarDetails(Car car) {
+        // Print the car details for the current row
+        String carDetails = String.format("Car %d | %.2f m travelled\t", car.carID, car.currentDistTravelled);
+        carDetails += printRaceTrack(car);
+
+        // Calculate the percentage distance completed
+        double percentageCompleted = (car.currentDistTravelled / Constants.RACE_LENGTH_METRES) * 100.0;
+        // Append percentage completed with square brackets
+        carDetails += String.format(" [%d%% of Race Length Covered]", (int) percentageCompleted);
+
+        return carDetails;
+    }
+
+    private static String printRaceTrack(Car car) {
         int raceLength = Constants.RACE_LENGTH_METRES / Constants.DISPLAY_THRESHOLD_LENGTH;
         int positionIndex = (int) (car.currentDistTravelled / Constants.DISPLAY_THRESHOLD_LENGTH);
 
         // Print the race track with cars ordered by ID
+        StringBuilder raceTrack = new StringBuilder();
         for (int j = 0; j < raceLength; j++) {
-            if (j == positionIndex) {
-                System.out.print("|" + car.carID + "|");
-            } else {
-                System.out.print("-");
-            }
+            raceTrack.append((j == positionIndex) ? "|" + car.carID + "|" : "-");
         }
-    }
 
+        return raceTrack.toString();
+    }
 }
